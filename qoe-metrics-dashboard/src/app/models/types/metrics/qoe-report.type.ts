@@ -1,8 +1,10 @@
+import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
+
 export interface QoeMetric {
-    BufferLevel?: BufferLevel;
-    HttpList?: HttpList;
-    MPDInformation?: MPDInformation[];
-    RepSwitchList?: RepSwitchList;
+    [EMetricsType.BUFFER_LEVEL]?: BufferLevel;
+    [EMetricsType.HTTP_LIST]?: HttpList;
+    [EMetricsType.MPD_INFORMATION]?: MPDInformation[];
+    [EMetricsType.REP_SWITCH_LIST]?: RepSwitchList;
 }
 
 export interface RepSwitchList {

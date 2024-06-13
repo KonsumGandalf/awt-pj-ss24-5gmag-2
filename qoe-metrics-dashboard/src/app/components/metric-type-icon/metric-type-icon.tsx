@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Tooltip } from '@mui/material';
 
 import { metricsTypeInformation } from '../../models/const/metrics/metrics-type-icon.record';
@@ -23,9 +21,7 @@ export function MetricTypeIcon(props: MetricTypeIconProps) {
         <Tooltip title={metricsTypeInformation[props.metricType].title}>
             {metricsTypeInformation[props.metricType].icon({
                 style: {
-                    background:
-                        metricsTypeInformation[props.metricType]
-                            .backgroundColor,
+                    background: metricsTypeInformation[props.metricType].backgroundColor,
                     color: 'white',
                     fontSize: '1.5rem',
                     padding: '0.5rem',

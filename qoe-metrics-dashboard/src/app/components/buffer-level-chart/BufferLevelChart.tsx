@@ -1,15 +1,12 @@
-import { Box, Typography, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { CartesianGrid, Label, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { BufferLevel } from 'src/app/types/qoe-report.type';
 
+import { Box, Typography, useTheme } from '@mui/material';
+
+import { BufferLevel } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
-function BufferLevelChart({
-                              bufferLevel
-                          }: {
-    bufferLevel: BufferLevel | undefined;
-}) {
+function BufferLevelChart({ bufferLevel }: { bufferLevel: BufferLevel | undefined }) {
     const theme = useTheme();
 
     if (!bufferLevel) {
@@ -18,7 +15,7 @@ function BufferLevelChart({
 
     const data = bufferLevel.BufferLevelEntry.map((entry) => ({
         level: Number(entry.level),
-        timestamp: new Date(entry.t).getTime()
+        timestamp: new Date(entry.t).getTime(),
     }));
 
     return (
@@ -34,13 +31,8 @@ function BufferLevelChart({
                 Buffer Level
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
-                <LineChart
-                    data={data}
-                    width={500}
-                    height={1000}
-                    margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
-                >
-                    <CartesianGrid/>
+                <LineChart data={data} width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
+                    <CartesianGrid />
                     <XAxis
                         dataKey="timestamp"
                         tick={(args) => <XAxisTick {...args}></XAxisTick>}
@@ -52,11 +44,7 @@ function BufferLevelChart({
                         domain={['auto', 'auto']}
                         scale={'time'}
                     >
-                        <Label
-                            value="Timestamp"
-                            position="bottom"
-                            style={{ textAnchor: 'middle' }}
-                        />
+                        <Label value="Timestamp" position="bottom" style={{ textAnchor: 'middle' }} />
                     </XAxis>
 
                     <YAxis tick={(args) => <TypographyTick {...args}></TypographyTick>}>
@@ -68,16 +56,10 @@ function BufferLevelChart({
                             style={{ textAnchor: 'middle' }}
                         />
                     </YAxis>
-                    <Line
-                        type="linear"
-                        dataKey="level"
-                        stroke={theme.palette.primary.main}
-                    />
+                    <Line type="linear" dataKey="level" stroke={theme.palette.primary.main} />
                     <Tooltip
                         position={{ y: 0 }}
-                        labelFormatter={(name: string) =>
-                            'Timestamp: ' + dayjs(name).format('YYYY-MM-DD HH:mm:ss:SSS')
-                        }
+                        labelFormatter={(name: string) => 'Timestamp: ' + dayjs(name).format('YYYY-MM-DD HH:mm:ss:SSS')}
                         formatter={(value: string, name, props) => [value, 'Duration in ms']}
                     />
                 </LineChart>
