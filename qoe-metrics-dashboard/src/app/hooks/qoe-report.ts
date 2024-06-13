@@ -15,8 +15,7 @@ export const useQoeReport = (report: TMetricsDetailReport) => {
     }
 
     const findMetricValue = <T extends keyof QoeMetric>(metricName: T) => {
-        const metric = QoeMetric.find((metric) => metric[metricName] !== undefined);
-        return metric ? metric[metricName] : undefined;
+        return QoeMetric.find((metric) => metric[metricName] !== undefined)?.[metricName];
     };
 
     return {
