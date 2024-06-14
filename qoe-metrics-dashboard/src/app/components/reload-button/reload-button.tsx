@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { ReplayTwoTone } from '@mui/icons-material';
-import { Button, ButtonProps, Tooltip } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
 
 import { EnvContext } from '../../env.context';
 import { useSseReloadList } from '../../hooks/api';

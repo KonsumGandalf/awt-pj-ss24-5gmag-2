@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
     CartesianGrid,
     Label,
@@ -24,40 +24,87 @@ type DataPoint = {
 
 type TypeDataPoint = Record<string, DataPoint[]>;
 
-function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
-    const [scatterVisibility, setScatterisibility] = useState<
-        Record<string, boolean>
-    >({});
+const useHttpListData = (httpList: HttpList) => {
+    const data = useMemo(
+        () =>
+            httpList.HttpListEntry.reduce((acc, entry) => {
+                // Ensure acc[entry.type] is initialized as an empty array if it doesn't exist
+                if (!acc[entry.type]) {
+                    acc[entry.type] = [];
+                }
 
-    const dataByTypeRef = useRef<TypeDataPoint>({});
+                // Push new data into acc[entry.type]
+                acc[entry.type].push({
+                    duration: Number(entry.Trace.d),
+                    transferedBytes: Number(entry.Trace.b),
+                });
 
-    useEffect(() => {
-        if (httpList) {
-            dataByTypeRef.current = httpList.HttpListEntry.reduce(
-                (acc: TypeDataPoint, entry) => {
-                    if (!acc[entry.type]) {
-                        acc[entry.type] = [];
-                        setScatterisibility((prev) => ({
-                            ...prev,
-                            [entry.type]: true,
-                        }));
-                    }
+                return acc;
+            }, {} as TypeDataPoint),
+        [httpList]
+    );
 
-                    acc[entry.type].push({
-                        duration: Number(entry.Trace.d),
-                        transferedBytes: Number(entry.Trace.b),
-                    });
-                    return acc;
+    return { data };
+};
+
+function HttpListChart({ httpList }: { httpList: HttpList }) {
+    const { data } = useHttpListData(httpList);
+
+    const [scatterProps, setScatterProps] = useState(
+        Object.keys(data).reduce(
+            (acc, type) => {
+                acc[type] = {
+                    hide: false,
+                    hover: false,
+                };
+
+                return acc;
+            },
+            {} as Record<
+                string,
+                {
+                    hide: boolean;
+                    hover: boolean;
+                }
+            >
+        )
+    );
+
+    const LegendMouseEnter = (e: { value: string }) => {
+        setScatterProps((prev) => {
+            return {
+                ...prev,
+                [e.value]: {
+                    ...prev[e.value],
+                    hover: true,
                 },
-                {}
-            );
-        }
-    }, [httpList]);
+            };
+        });
+    };
 
-    if (!httpList) {
-        return <Box>No data found for Http List</Box>;
-    }
+    const LegendMouseLeave = (e: { value: string }) => {
+        setScatterProps((prev) => {
+            return {
+                ...prev,
+                [e.value]: {
+                    ...prev[e.value],
+                    hover: false,
+                },
+            };
+        });
+    };
 
+    const LegendClick = (e: { value: string }) => {
+        setScatterProps((prev) => {
+            return {
+                ...prev,
+                [e.value]: {
+                    ...prev[e.value],
+                    hide: !prev[e.value].hide,
+                },
+            };
+        });
+    };
     return (
         <Box
             padding={'2rem'}
@@ -71,11 +118,7 @@ function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
                 Http List
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
-                <ScatterChart
-                    width={500}
-                    height={1000}
-                    margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
-                >
+                <ScatterChart width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" />
 
                     <XAxis
@@ -84,15 +127,9 @@ function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
                         type="number"
                         unit={'ms'}
                         domain={['auto', 'auto']}
-                        tick={(args) => (
-                            <TypographyTick {...args}></TypographyTick>
-                        )}
+                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
                     >
-                        <Label
-                            value="Duration in ms"
-                            position="bottom"
-                            style={{ textAnchor: 'middle' }}
-                        ></Label>
+                        <Label value="Duration in ms" position="bottom" style={{ textAnchor: 'middle' }}></Label>
                     </XAxis>
                     <YAxis
                         dataKey="transferedBytes"
@@ -100,9 +137,7 @@ function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
                         type="number"
                         unit={'bytes'}
                         domain={['auto', 'auto']}
-                        tick={(args) => (
-                            <TypographyTick {...args}></TypographyTick>
-                        )}
+                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
                     >
                         <Label
                             value="Transferred Bytes"
@@ -120,25 +155,25 @@ function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
 
                     <Legend
                         verticalAlign="top"
-                        onClick={(e: { value: string }) => {
-                            setScatterisibility({
-                                ...scatterVisibility,
-                                [e.value]: !scatterVisibility[e.value],
-                            });
-                        }}
+                        onClick={LegendClick}
+                        onMouseEnter={LegendMouseEnter}
+                        onMouseLeave={LegendMouseLeave}
+                        style={{ cursor: 'pointer' }}
                         height={40}
                     />
-                    {Object.entries(dataByTypeRef.current).map(
-                        ([type, data], index) => (
+                    {Object.entries(data).map(([type, dataPoints], index) => {
+                        return (
                             <Scatter
                                 key={type}
                                 name={type}
-                                data={data}
+                                data={dataPoints}
+                                style={{ cursor: 'pointer' }}
                                 fill={graphColors[index % graphColors.length]}
-                                hide={!scatterVisibility[type]}
-                            />
-                        )
-                    )}
+                                hide={scatterProps[type].hide}
+                                opacity={scatterProps[type].hover ? 0.2 : 1}
+                            ></Scatter>
+                        );
+                    })}
                 </ScatterChart>
             </ResponsiveContainer>
         </Box>

@@ -16,7 +16,7 @@ export function DetailContent({ report }: { report: TMetricsDetailReport }) {
             <BasicInformationTables receptionReport={report.ReceptionReport}></BasicInformationTables>
             <MPDInformationTable mpdInfo={mpdInfo}></MPDInformationTable>
             <BufferLevelChart bufferLevel={bufferLevel}></BufferLevelChart>
-            <HttpListChart httpList={httpList}></HttpListChart>
+            {httpList && <HttpListChart httpList={httpList}></HttpListChart>}
             <RepSwitchesChart repSwitchList={repSwitchList} mpdInfo={mpdInfo}></RepSwitchesChart>
         </Box>
     );
