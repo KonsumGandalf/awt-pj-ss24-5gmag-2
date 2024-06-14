@@ -3,7 +3,7 @@ import { isAxiosError } from 'axios';
 import { defaults, pick, range } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 
-import { Alert, CircularProgress } from '@mui/material';
+import { Alert, CircularProgress, SxProps, Theme } from '@mui/material';
 import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
@@ -27,6 +27,24 @@ import './Overview.scss';
 
 const ROWS_PER_PAGE = 5;
 const MAX_ROWS_PER_PAGE = 25;
+
+const GridSx: SxProps<Theme> = {
+    '& .MuiDataGrid-row:hover': {
+        backgroundColor: theme.palette.primary.light,
+        cursor: 'pointer',
+    },
+    '& .icon-cell': {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
+    '& .MuiDataGrid-toolbarContainer': {
+        button: {
+            padding: '0.75rem',
+            margin: '0.5rem',
+        },
+    },
+};
 
 /**
  * Displays an overview of the metrics types
@@ -148,22 +166,7 @@ function Overview() {
                     handleClickMetric(filterQueryParams);
                 }}
                 getRowClassName={() => 'row'}
-                sx={{
-                    '& .MuiDataGrid-row:hover': {
-                        backgroundColor: theme.palette.primary.light,
-                    },
-                    '& .icon-cell': {
-                        display: 'flex',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                    },
-                    '& .MuiDataGrid-toolbarContainer': {
-                        button: {
-                            padding: '0.75rem',
-                            margin: '0.5rem',
-                        },
-                    },
-                }}
+                sx={GridSx}
                 loading={loading}
                 slots={{ toolbar: GridToolbar }}
             />

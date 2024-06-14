@@ -25,10 +25,10 @@ const CustomNavLink = styled(Link, {
     textTransform: 'uppercase',
     fontFamily: 'Roboto',
     fontSize: 'smaller',
+    borderRadius: '2rem',
     ...(isActive && {
         background: theme.palette.background.default,
         color: theme.palette.text.primary,
-        borderRadius: '2rem',
     }),
 }));
 
@@ -51,9 +51,7 @@ function NavBar() {
                             <CustomNavLink
                                 key={page.route}
                                 to={page.route}
-                                isActive={location.pathname.includes(
-                                    page.route
-                                )}
+                                isActive={location.pathname.includes(page.route)}
                             >
                                 {page.label}
                             </CustomNavLink>
@@ -69,11 +67,7 @@ function NavBar() {
                             justifyContent: 'center',
                         }}
                     >
-                        <img
-                            src={logo}
-                            className="logo"
-                            alt="The 5G MAG logo"
-                        ></img>
+                        <img src={logo} className="logo" alt="The 5G MAG logo"></img>
                     </Box>
 
                     <div id={NAV_BAR_PORTAL_ID}></div>
