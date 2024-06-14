@@ -49,7 +49,7 @@ function DetailPage() {
                             report.ReceptionReport.QoeReport.reportTime
                         }
                     >
-                        <DetailContent report={report} />
+                        <DetailContent reports={[report]} />
                     </DetailPageContext.Provider>
                 ))}
         </Box>

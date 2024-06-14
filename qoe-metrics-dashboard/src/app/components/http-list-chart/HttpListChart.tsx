@@ -14,7 +14,6 @@ import {
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
-import { HttpList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick } from '../utils/chart';
 
 type DataPoint = {
@@ -22,52 +21,16 @@ type DataPoint = {
     transferedBytes: number;
 };
 
-type TypeDataPoint = Record<string, DataPoint[]>;
+export type TypeDataPoint = Record<string, DataPoint[]>;
 
-const useHttpListData = (httpList: HttpList) => {
-    const data = useMemo(
-        () =>
-            httpList.HttpListEntry.reduce((acc, entry) => {
-                // Ensure acc[entry.type] is initialized as an empty array if it doesn't exist
-                if (!acc[entry.type]) {
-                    acc[entry.type] = [];
-                }
+export type httpListProps = { data: TypeDataPoint };
 
-                // Push new data into acc[entry.type]
-                acc[entry.type].push({
-                    duration: Number(entry.Trace.d),
-                    transferedBytes: Number(entry.Trace.b),
-                });
-
-                return acc;
-            }, {} as TypeDataPoint),
-        [httpList]
-    );
-
-    return { data };
-};
-
-function HttpListChart({ httpList }: { httpList: HttpList }) {
-    const { data } = useHttpListData(httpList);
-
+function HttpListChart({ data }: httpListProps) {
     const [scatterProps, setScatterProps] = useState(
-        Object.keys(data).reduce(
-            (acc, type) => {
-                acc[type] = {
-                    hide: false,
-                    hover: false,
-                };
-
-                return acc;
-            },
-            {} as Record<
-                string,
-                {
-                    hide: boolean;
-                    hover: boolean;
-                }
-            >
-        )
+        Object.keys(data).reduce((acc, key) => {
+            acc[key] = { hide: false, hover: false };
+            return acc;
+        }, {} as Record<string, { hide: boolean; hover: boolean }>)
     );
 
     const LegendMouseEnter = (e: { value: string }) => {
@@ -161,16 +124,14 @@ function HttpListChart({ httpList }: { httpList: HttpList }) {
                         style={{ cursor: 'pointer' }}
                         height={40}
                     />
-                    {Object.entries(data).map(([type, dataPoints], index) => {
+                    {Object.keys(data).map((key, index) => {
                         return (
                             <Scatter
-                                key={type}
-                                name={type}
-                                data={dataPoints}
-                                style={{ cursor: 'pointer' }}
-                                fill={graphColors[index % graphColors.length]}
-                                hide={scatterProps[type].hide}
-                                opacity={scatterProps[type].hover ? 0.2 : 1}
+                                key={key}
+                                name={key}
+                                data={data[key]}
+                                fill={scatterProps[key].hide ? 'transparent' : graphColors[index]}
+                                hide={scatterProps[key].hide}
                             ></Scatter>
                         );
                     })}
