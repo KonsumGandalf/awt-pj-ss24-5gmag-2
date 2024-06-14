@@ -132,6 +132,9 @@ function HttpListChart({ data }: httpListProps) {
                                 data={data[key]}
                                 fill={scatterProps[key].hide ? 'transparent' : graphColors[index]}
                                 hide={scatterProps[key].hide}
+                                style={{
+                                    opacity: scatterProps[key].hover ? 0.5 : 1,
+                                }}
                             ></Scatter>
                         );
                     })}
