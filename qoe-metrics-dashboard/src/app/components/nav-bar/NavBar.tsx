@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 
+import { Theme } from '@emotion/react';
 import { AppBar, Box, Container, Toolbar, useTheme } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, SxProps } from '@mui/material/styles';
 
-import logo from '../../../assets/Logo_5G_MAG.png';
-
+import { NavBarLogo } from './NavBarLogo';
 import { NAV_BAR_PORTAL_ID } from './token';
 
 import './NavBar.scss';
@@ -32,14 +32,18 @@ const CustomNavLink = styled(Link, {
     }),
 }));
 
+const wrapperSx: SxProps<Theme> = {
+    height: '5rem',
+};
+
 function NavBar() {
     const theme = useTheme();
     const location = useLocation();
 
     return (
-        <AppBar position="static" sx={{ height: '5rem' }}>
-            <Container maxWidth="xl" sx={{ height: '5rem' }}>
-                <Toolbar disableGutters sx={{ height: '5rem' }}>
+        <AppBar position="static" sx={wrapperSx}>
+            <Container maxWidth="xl" sx={wrapperSx}>
+                <Toolbar disableGutters sx={wrapperSx}>
                     <Box
                         sx={{
                             flexGrow: 1,
@@ -57,19 +61,7 @@ function NavBar() {
                             </CustomNavLink>
                         ))}
                     </Box>
-                    <Box
-                        sx={{
-                            background: theme.palette.background.default,
-                            padding: '0.5rem',
-                            borderRadius: '0.5rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <img src={logo} className="logo" alt="The 5G MAG logo"></img>
-                    </Box>
-
+                    <NavBarLogo theme={theme} />
                     <div id={NAV_BAR_PORTAL_ID}></div>
                 </Toolbar>
             </Container>

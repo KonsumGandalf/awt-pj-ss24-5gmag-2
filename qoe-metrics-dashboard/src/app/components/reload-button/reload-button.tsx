@@ -17,13 +17,6 @@ export function ReloadButton({ action }: { action: () => void }) {
 
     const { reloadCount, resetReloadCount } = useSseReloadList(envCtx.backendUrl);
 
-    const ReloadButton = styled(Button)<ButtonProps>(({ theme }) => ({
-        color: theme.palette.background.default,
-        size: 'large',
-        margin: '1rem',
-        inlineSize: '12rem',
-    }));
-
     const handleReload = () => {
         if (action) {
             action();
@@ -32,14 +25,17 @@ export function ReloadButton({ action }: { action: () => void }) {
     };
 
     return (
-        <ReloadButton
+        <Button
             className="reloadButton"
             onClick={handleReload}
             startIcon={<ReplayTwoTone />}
-            variant={'contained'}
+            variant="contained"
+            color="primary" // Example of how to set color
+            size="large"
+            style={{ margin: '1rem' }} // Example of how to apply inline styles
         >
             Reload count: {reloadCount}
-        </ReloadButton>
+        </Button>
     );
 }
 
