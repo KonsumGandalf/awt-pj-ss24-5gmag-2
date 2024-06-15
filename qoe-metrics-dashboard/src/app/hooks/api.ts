@@ -5,7 +5,7 @@ import { isNil, omitBy } from 'lodash';
 import { TMetricsDetailsRequestParams } from '../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
-import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.interface';
+import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.type';
 
 /**
  * Generically fetches data from the backend
