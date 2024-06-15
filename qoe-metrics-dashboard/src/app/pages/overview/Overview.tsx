@@ -21,7 +21,7 @@ import { EMetricsType } from '../../models/enums/metrics/metrics-type.enum';
 import { ESortingOrder } from '../../models/enums/shared/sorting-order.enum';
 import { TMetricsDetailsRequestParams } from '../../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../../models/types/requests/metrics-overview-request-params.interface';
-import { TMetricsOverviewReport } from '../../models/types/responses/metrics-overview-report.interface';
+import { TMetricsOverviewReport } from '../../models/types/responses/metrics-overview-report.type';
 
 import './Overview.scss';
 
