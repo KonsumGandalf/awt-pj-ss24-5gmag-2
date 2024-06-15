@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 function observeEndpoint() {
-    const eventSource = new EventSource('http://localhost:3003/reporting-ui/metrics/reload');
+    const eventSource = new EventSource('http://localhost:3003/reporting-ui/sse/reload');
 
     eventSource.onopen = function (event) {
         log('Connection opened');
@@ -34,8 +34,12 @@ function observeEndpoint() {
         log('Event: message, data: ' + e.data);
     };
 
-    eventSource.addEventListener('reload', function (e) {
-        log(e.data);
+    eventSource.addEventListener('consumption', function (e) {
+        log(e.data, 'consumption');
+    });
+
+    eventSource.addEventListener('metrics', function (e) {
+        log(e.data, 'metrics');
     });
 }
 
