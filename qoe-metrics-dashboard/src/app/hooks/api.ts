@@ -94,11 +94,11 @@ export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetri
  *
  * @param backendUrl - The URL of the backend
  */
-export const useSseReloadList = (backendUrl: string) => {
+export const useSseReloadList = (backendUrl: string, topic: string) => {
     const [reloadCount, setReloadCount] = useState(0);
 
     useEffect(() => {
-        const sse = new EventSource(`${backendUrl}/reporting-ui/metrics/reload`);
+        const sse = new EventSource(`${backendUrl}/reporting-ui/sse/reload`);
 
         const handleReload = (e: MessageEvent) => {
             setReloadCount((prevCount) => prevCount + 1);
@@ -116,10 +116,10 @@ export const useSseReloadList = (backendUrl: string) => {
             }
         };
 
-        sse.addEventListener('reload', handleReload);
+        sse.addEventListener(topic, handleReload);
 
         return () => {
-            sse.removeEventListener('reload', handleReload);
+            sse.removeEventListener(topic, handleReload);
             sse.close();
         };
     }, [backendUrl]);
