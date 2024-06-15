@@ -8,7 +8,7 @@ router.post('/:provisioningSessionId', function(req, res, next) {
     const payload = req.body
     const path = `public/reports/${req.params.provisioningSessionId}/consumption_reports/${payload.reportingClientId}_${new Date().toISOString()}.json`
 
-    Utils.writeToDisk(path, JSON.stringify(payload))
+    Utils.writeToDisk(path, JSON.stringify(payload), 'consumption')
     res.send(204);
   }
   catch(e) {

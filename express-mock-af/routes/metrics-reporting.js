@@ -6,7 +6,7 @@ router.post('/:provisioningSessionId/:metricsReportingConfigurationId', function
     const payload = req.body;
     const path = `${Utils.getReportPath(req.params.provisioningSessionId, true)}/${req.params.metricsReportingConfigurationId}/${new Date().toISOString()}.xml`;
 
-    Utils.writeToDisk(path, payload);
+    Utils.writeToDisk(path, payload, 'metrics');
     res.send(204);
 });
 
