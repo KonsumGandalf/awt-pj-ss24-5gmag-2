@@ -1,4 +1,3 @@
-import { Box, CircularProgress } from '@mui/material';
 import { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -6,8 +5,10 @@ import { EnvContext } from '../../../env.context';
 import { useMetricsReportDetail } from '../../../hooks/metrics-api';
 import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
 
-import { DetailPageContent } from './DetailPageContent';
+import { Box, CircularProgress } from '@mui/material';
+
 import { DetailPageContext } from './DetailPageContext';
+import { DetailPageContent } from './DetailPageContent';
 
 import './DetailPage.scss';
 

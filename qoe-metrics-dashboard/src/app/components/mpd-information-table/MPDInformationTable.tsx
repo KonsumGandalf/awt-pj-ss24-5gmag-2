@@ -1,5 +1,5 @@
 import React from 'react';
-import { TMappedMpdInfo } from 'src/app/models/types/metrics/qoe-report.type';
+import { TMappedMpdInfo } from 'src/app/hooks/qoe-report';
 
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 
@@ -18,7 +18,7 @@ function MPDInformationTable({ mpdInfo }: { mpdInfo: TMappedMpdInfo[] }) {
             flexDirection={'column'}
         >
             <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
-                MPD Information
+                Representation Switches
             </Typography>
             <Table>
                 <TableHead>

@@ -2,11 +2,11 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { TMappedMpdInfo, TMappedRepSwitchList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
-import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
@@ -18,7 +18,7 @@ function RepSwitchesChart({
 }) {
     const [mimeTypeVisibility, setMimeTypeVisibility] = useState<Record<string, boolean>>({});
 
-    if (!repSwitchList.length || !mpdInfo.length) {
+    if (!repSwitchList || !mpdInfo) {
         return null;
     }
 
@@ -39,28 +39,40 @@ function RepSwitchesChart({
         return acc;
     }, {} as { [key: string]: { bandwidth: number; timestamp: number }[] });
 
-    const timestamps: number[] = [];
-
-    Object.entries(dataByMimeType).forEach(([_, entries]) => {
-        timestamps.push(...entries.map((e) => e.timestamp));
-    });
-
     const data: { [key: string]: number }[] = [];
 
-    timestamps.forEach((t) => {
-        const datapoint: { [key: string]: number } = {
-            timestamp: t,
-        };
-        Object.entries(dataByMimeType).forEach(([mimeType, entries]) => {
-            const entry = _.minBy(entries, (o) => {
-                return o.timestamp > t ? Infinity : t - o.timestamp;
-            });
-            if (entry && entry.timestamp <= t) {
-                datapoint[mimeType] = entry.bandwidth;
-            }
+    Object.entries(dataByMimeType).forEach((entry) => {
+        const [mimeType, entries] = entry;
+        const latestBandwidth = _.maxBy(entries, 'timestamp')?.bandwidth;
+
+        if (!latestBandwidth) return;
+
+        data.push({
+            [mimeType]: latestBandwidth,
         });
-        data.push(datapoint);
     });
+
+    // repSwitchList.RepSwitchEvent.forEach((event) => {
+    //     const timestamp = new Date(event.t).getTime();
+    //     let res = {
+    //         timestamp,
+    //     };
+    //     if (data.find((e) => e.timestamp === timestamp)) {
+    //         return;
+    //     }
+    //     Object.entries(dataByMimeType).forEach((entry) => {
+    //         const [mimeType, entries] = entry;
+    //         const filteredElems = entries.filter((e) => e.timestamp <= timestamp);
+    //         if (!filteredElems.length) return;
+    //         filteredElems.sort((a, b) => b.timestamp - a.timestamp);
+    //         const latestBandwidth = filteredElems[0].bandwidth;
+    //         res = { ...res, [mimeType]: latestBandwidth };
+    //     });
+    //     data.push(res);
+    // });
+
+    console.log(data);
+    console.log(mimeTypes);
 
     return (
         <Box
@@ -101,6 +113,8 @@ function RepSwitchesChart({
                         />
                     </YAxis>
                     {[...mimeTypes].map((mimeType, i) => {
+                        console.log(mimeTypeVisibility[mimeType]);
+                        console.log(mimeType.toString());
                         return (
                             <Line
                                 key={mimeType.toString()}

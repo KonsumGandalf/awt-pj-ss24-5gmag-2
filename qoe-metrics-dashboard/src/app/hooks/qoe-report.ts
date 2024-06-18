@@ -1,7 +1,40 @@
 import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
-import { TMappedQoeMetric, TMappedRepSwitchList } from '../models/types/metrics/qoe-report.type';
+import { QoeMetric } from '../models/types/metrics/qoe-report.type';
 import { TMetricsDetailReport } from '../models/types/responses/metrics-details-report.interface';
-import { QoeMetric } from '../models/types/responses/metrics-details-report.interface';
+
+export type TMappedQoeMetric = {
+    mpdInfo: TMappedMpdInfo[];
+    bufferLevel: TMappedBufferLevel[];
+    httpList: TMappedHttpList[];
+    repSwitchList: TMappedRepSwitchList[];
+};
+
+export type TMappedMpdInfo = {
+    mimeType: string;
+    bandwidth: number;
+    representationId: string;
+    codecs: string;
+    height?: string;
+    width?: string;
+    frameRate?: string;
+};
+
+export type TMappedBufferLevel = {
+    level: number;
+    timeStamp: number;
+};
+
+export type TMappedHttpList = {
+    type: string;
+    duration: number;
+    transferedBytes: number;
+};
+
+export type TMappedRepSwitchList = {
+    MimeType: string;
+    timeStamp: number;
+    bandwidth: number;
+};
 
 export const qoEMetricsFromReport = (report: TMetricsDetailReport): TMappedQoeMetric => {
     const QoeMetric = report?.ReceptionReport?.QoeReport?.QoeMetric;
