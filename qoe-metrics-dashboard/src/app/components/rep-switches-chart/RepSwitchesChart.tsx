@@ -22,6 +22,8 @@ function RepSwitchesChart({
         return null;
     }
 
+    console.log(repSwitchList);
+
     const mimeTypes = [...new Set(repSwitchList.map((i) => i.MimeType))];
 
     const dataByMimeType: {
@@ -52,28 +54,6 @@ function RepSwitchesChart({
             [mimeType]: latestEntry.bandwidth,
         });
     });
-
-    // repSwitchList.RepSwitchEvent.forEach((event) => {
-    //     const timestamp = new Date(event.t).getTime();
-    //     let res = {
-    //         timestamp,
-    //     };
-    //     if (data.find((e) => e.timestamp === timestamp)) {
-    //         return;
-    //     }
-    //     Object.entries(dataByMimeType).forEach((entry) => {
-    //         const [mimeType, entries] = entry;
-    //         const filteredElems = entries.filter((e) => e.timestamp <= timestamp);
-    //         if (!filteredElems.length) return;
-    //         filteredElems.sort((a, b) => b.timestamp - a.timestamp);
-    //         const latestBandwidth = filteredElems[0].bandwidth;
-    //         res = { ...res, [mimeType]: latestBandwidth };
-    //     });
-    //     data.push(res);
-    // });
-
-    console.log(data);
-    console.log(mimeTypes);
 
     return (
         <Box
