@@ -43,12 +43,13 @@ function RepSwitchesChart({
 
     Object.entries(dataByMimeType).forEach((entry) => {
         const [mimeType, entries] = entry;
-        const latestBandwidth = _.maxBy(entries, 'timestamp')?.bandwidth;
+        const latestEntry = _.maxBy(entries, 'timestamp');
 
-        if (!latestBandwidth) return;
+        if (!latestEntry) return;
 
         data.push({
-            [mimeType]: latestBandwidth,
+            timestamp: latestEntry.timestamp,
+            [mimeType]: latestEntry.bandwidth,
         });
     });
 
