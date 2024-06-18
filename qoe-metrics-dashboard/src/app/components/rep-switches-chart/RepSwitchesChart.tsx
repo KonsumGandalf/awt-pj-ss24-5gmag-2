@@ -1,86 +1,78 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import {
-    CartesianGrid,
-    Label,
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import _ from 'lodash';
+import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { TMappedMpdInfo, TMappedRepSwitchList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
-import {
-    MPDInformation,
-    RepSwitchList,
-} from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
     repSwitchList,
     mpdInfo,
 }: {
-    repSwitchList: RepSwitchList | undefined;
-    mpdInfo: MPDInformation[] | undefined;
+    repSwitchList: TMappedRepSwitchList[];
+    mpdInfo: TMappedMpdInfo[];
 }) {
-    const [mimeTypeVisibility, setMimeTypeVisibility] = useState<
-        Record<string, boolean>
-    >({});
+    const [mimeTypeVisibility, setMimeTypeVisibility] = useState<Record<string, boolean>>({});
 
     if (!repSwitchList || !mpdInfo) {
         return null;
     }
 
-    const mimeTypes = [...new Set(mpdInfo.map((i) => i.Mpdinfo.mimeType))];
+    const mimeTypes = [...new Set(repSwitchList.map((i) => i.MimeType))];
 
     const dataByMimeType: {
         [key: string]: { bandwidth: number; timestamp: number }[];
-    } = {};
-
-    repSwitchList.RepSwitchEvent.forEach((entry) => {
-        const infoElement = mpdInfo.find(
-            (info) => info.representationId === entry.to
-        );
-        if (!infoElement) return {};
-        const bandwidth = infoElement.Mpdinfo.bandwidth;
-        const elem = {
-            bandwidth: Number(bandwidth),
-            timestamp: new Date(entry.t).getTime(),
-        };
-        if (dataByMimeType[infoElement.Mpdinfo.mimeType]) {
-            dataByMimeType[infoElement.Mpdinfo.mimeType].push(elem);
-        } else {
-            dataByMimeType[infoElement.Mpdinfo.mimeType] = [elem];
+    } = repSwitchList.reduce((acc, entry) => {
+        if (!acc[entry.MimeType]) {
+            acc[entry.MimeType] = [];
         }
-    });
+
+        acc[entry.MimeType].push({
+            bandwidth: entry.bandwidth,
+            timestamp: entry.timeStamp,
+        });
+
+        return acc;
+    }, {} as { [key: string]: { bandwidth: number; timestamp: number }[] });
 
     const data: { [key: string]: number }[] = [];
 
-    repSwitchList.RepSwitchEvent.forEach((event) => {
-        const timestamp = new Date(event.t).getTime();
-        let res = {
-            timestamp,
-        };
-        if (data.find((e) => e.timestamp === timestamp)) {
-            return;
-        }
-        Object.entries(dataByMimeType).forEach((entry) => {
-            const [mimeType, entries] = entry;
-            const filteredElems = entries.filter(
-                (e) => e.timestamp <= timestamp
-            );
-            if (!filteredElems.length) return;
-            filteredElems.sort((a, b) => b.timestamp - a.timestamp);
-            const latestBandwidth = filteredElems[0].bandwidth;
-            res = { ...res, [mimeType]: latestBandwidth };
+    Object.entries(dataByMimeType).forEach((entry) => {
+        const [mimeType, entries] = entry;
+        const latestBandwidth = _.maxBy(entries, 'timestamp')?.bandwidth;
+
+        if (!latestBandwidth) return;
+
+        data.push({
+            [mimeType]: latestBandwidth,
         });
-        data.push(res);
     });
+
+    // repSwitchList.RepSwitchEvent.forEach((event) => {
+    //     const timestamp = new Date(event.t).getTime();
+    //     let res = {
+    //         timestamp,
+    //     };
+    //     if (data.find((e) => e.timestamp === timestamp)) {
+    //         return;
+    //     }
+    //     Object.entries(dataByMimeType).forEach((entry) => {
+    //         const [mimeType, entries] = entry;
+    //         const filteredElems = entries.filter((e) => e.timestamp <= timestamp);
+    //         if (!filteredElems.length) return;
+    //         filteredElems.sort((a, b) => b.timestamp - a.timestamp);
+    //         const latestBandwidth = filteredElems[0].bandwidth;
+    //         res = { ...res, [mimeType]: latestBandwidth };
+    //     });
+    //     data.push(res);
+    // });
+
+    console.log(data);
+    console.log(mimeTypes);
 
     return (
         <Box
@@ -95,12 +87,7 @@ function RepSwitchesChart({
                 Representation Switches
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
-                <LineChart
-                    data={data}
-                    width={500}
-                    height={1000}
-                    margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
-                >
+                <LineChart data={data} width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
                     <CartesianGrid />
                     <XAxis
                         dataKey="timestamp"
@@ -113,18 +100,10 @@ function RepSwitchesChart({
                         domain={['auto', 'auto']}
                         scale={'time'}
                     >
-                        <Label
-                            value="Timestamp"
-                            position="bottom"
-                            style={{ textAnchor: 'middle' }}
-                        />
+                        <Label value="Timestamp" position="bottom" style={{ textAnchor: 'middle' }} />
                     </XAxis>
 
-                    <YAxis
-                        tick={(args) => (
-                            <TypographyTick {...args}></TypographyTick>
-                        )}
-                    >
+                    <YAxis tick={(args) => <TypographyTick {...args}></TypographyTick>}>
                         <Label
                             value="Bandwidth in bit/s"
                             position="insideLeft"
@@ -133,26 +112,24 @@ function RepSwitchesChart({
                             style={{ textAnchor: 'middle' }}
                         />
                     </YAxis>
-                    {[...mimeTypes].map((mimeType, i) => (
-                        <Line
-                            key={mimeType.toString()}
-                            type="stepAfter"
-                            dataKey={mimeType}
-                            stroke={graphColors[i]}
-                            strokeWidth={3}
-                            hide={mimeTypeVisibility[mimeType]}
-                        />
-                    ))}
+                    {[...mimeTypes].map((mimeType, i) => {
+                        console.log(mimeTypeVisibility[mimeType]);
+                        console.log(mimeType.toString());
+                        return (
+                            <Line
+                                key={mimeType.toString()}
+                                type="stepAfter"
+                                dataKey={mimeType}
+                                stroke={graphColors[i]}
+                                strokeWidth={3}
+                                hide={mimeTypeVisibility[mimeType]}
+                            />
+                        );
+                    })}
                     <Tooltip
                         position={{ y: 0 }}
-                        labelFormatter={(name) =>
-                            'Timestamp: ' +
-                            dayjs(name).format('YYYY-MM-DD HH:mm:ss:SSS')
-                        }
-                        formatter={(value, name, props) => [
-                            value,
-                            'Bandwidth in bit/s',
-                        ]}
+                        labelFormatter={(name) => 'Timestamp: ' + dayjs(name).format('YYYY-MM-DD HH:mm:ss:SSS')}
+                        formatter={(value, name, props) => [value, 'Bandwidth in bit/s']}
                     />
                     <Legend
                         verticalAlign="top"

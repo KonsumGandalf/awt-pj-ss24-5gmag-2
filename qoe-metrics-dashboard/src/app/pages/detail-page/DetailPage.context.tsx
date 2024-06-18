@@ -1,9 +1,4 @@
 import { createContext } from 'react';
+import { TMappedReportDetails } from 'src/app/hooks/api';
 
-import { TMetricsDetailsReportResponse } from '../../models/types/responses/metrics-details-report.interface';
-
-export const DetailPageContext = createContext<
-    TMetricsDetailsReportResponse
->(
-    {} as TMetricsDetailsReportResponse
-);
+export const DetailPageContext = createContext<TMappedReportDetails>({} as TMappedReportDetails);

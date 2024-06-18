@@ -7,6 +7,8 @@ import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
 import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.interface';
 
+import { qoEMetricsFromReport, TMappedQoeMetric } from './qoe-report';
+
 /**
  * Generically fetches data from the backend
  *
@@ -70,13 +72,37 @@ export const useReportList = (
     return { reportList, error, loading };
 };
 
+export type TReportResponse = {
+    reportDetails?: TMappedReportDetails;
+    error: any;
+    loading: boolean;
+};
+
+export type TMappedReportDetails = {
+    ClientID: string;
+    ContentURI: string;
+    xmlns: string;
+    'xmlns:sv': string;
+    'xsi:schemaLocation': string;
+    'xmlns:xsi': string;
+    QoeReport: {
+        RecordingSessionID: string;
+        ReportPeriod: string;
+        ReportTime: string;
+        PeriodID: string;
+    } & TMappedQoeMetric;
+};
+
 /**
  * Fetches the details of a report
  *
  * @param backendUrl - The URL of the backend
  * @param requestDetailsParams - The filter parameters for the request
  */
-export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetricsDetailsRequestParams) => {
+export const useReportDetail = (
+    backendUrl: string,
+    requestDetailsParams: TMetricsDetailsRequestParams
+): TReportResponse => {
     const {
         response: reportDetails,
         error,
@@ -86,7 +112,34 @@ export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetri
         params: requestDetailsParams,
     });
 
-    return { reportDetails, error, loading };
+    if (reportDetails) {
+        const firstReport = reportDetails[0];
+
+        const receptionReport = firstReport.ReceptionReport;
+
+        const QoeMetrics = qoEMetricsFromReport(firstReport);
+
+        const mappedReportList = {
+            ClientID: receptionReport.clientID,
+            ContentURI: receptionReport.contentURI,
+            xmlns: receptionReport.xmlns,
+            'xmlns:sv': receptionReport['xmlns:sv'],
+            'xsi:schemaLocation': receptionReport['xsi:schemaLocation'],
+            'xmlns:xsi': receptionReport['xmlns:xsi'],
+            QoeReport: {
+                RecordingSessionID: receptionReport.QoeReport.recordingSessionId,
+                ReportPeriod: receptionReport.QoeReport.reportPeriod,
+                ReportTime: receptionReport.QoeReport.reportTime,
+                PeriodID: receptionReport.QoeReport.periodID,
+
+                ...QoeMetrics,
+            },
+        };
+
+        return { reportDetails: mappedReportList, error, loading };
+    }
+
+    return { error, loading };
 };
 
 /**
