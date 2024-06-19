@@ -13,7 +13,7 @@ export interface ConsumptionReportingUnit {
     serverEndpointAddress: ServerEndpointAddress;
     startTime: string;
     duration: number;
-    locations: any[];
+    locations: never[];
     stability: number;
 }
 

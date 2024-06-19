@@ -113,7 +113,7 @@ function Overview() {
 
     return (
         <div className="page-wrapper">
-            <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION}/>
+            <ReloadButton action={onReload} topic={ESseTopic.METRICS}/>
             <DataGrid
                 rows={reportList}
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}
