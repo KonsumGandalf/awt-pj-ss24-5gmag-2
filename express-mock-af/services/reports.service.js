@@ -1,5 +1,5 @@
 const xml2js = require('xml2js');
-const { map, pick, chain, merge, isMatch, isNil, omitBy, defaults } = require('lodash');
+const { filter, pick, chain, merge, isMatch, isNil, omitBy, defaults } = require('lodash');
 const Utils = require('../utils/Utils');
 
 class ReportsService {
@@ -26,6 +26,18 @@ class ReportsService {
         })), isNil));
     }
 
+
+
+    transformJSONtoReport(jsonArray) {
+        if (Array.isArray(jsonArray)) {
+            return jsonArray.map(jsonObj => {
+                return JSON.parse(jsonObj);
+            });
+        }
+
+        return JSON.parse(jsonArray);
+    }
+
     /**
      * Reads multiple saved metrics reports and generates a combined report
      *
@@ -42,6 +54,27 @@ class ReportsService {
 
         const transformedJsonResponse = await this.transformXmlToReport(readContent);
         return await this.overviewMetricsReport(transformedJsonResponse, queryFilter);
+    }
+
+    async generateConsumptionReport(provisionSessionIds, queryFilter) {
+        const readContent = (await Promise.all(
+            provisionSessionIds.map(async (id) => {
+                return Utils.readFiles(`public/reports/${id}/consumption_reports`);
+            })
+        )).filter(content => content.length !== 0).flat();
+        const transformedJsonResponse = this.transformJSONtoReport(readContent);
+
+        return await this.overviewConsumptionReport(transformedJsonResponse, queryFilter);
+    }
+
+    async overviewConsumptionReport(reports, queryFilter) {
+        const { } = defaults(
+        );
+
+        return chain(reports)
+            .map((report) => {
+                return report;
+            }).value();
     }
 
     /**
@@ -88,7 +121,6 @@ class ReportsService {
                 let result = chain(chainInstance);
                 if (offset !== undefined) {
                     result = result.drop(offset);
-                    console.log(123)
                 }
                 if (limit !== undefined) {
                     result = result.take(limit);
@@ -108,8 +140,20 @@ class ReportsService {
     filterReports(reportsList, queryFilter) {
         const clearQueryFilter = omitBy(queryFilter, isNil);
         return reportsList.filter(report => {
-            const flattenedReport = merge(report.ReceptionReport, report.ReceptionReport.QoeReport);
-            return isMatch(flattenedReport, clearQueryFilter);
+            if(report.ReceptionReport) {
+                const flattenedReport = merge(report.ReceptionReport, report.ReceptionReport.QoeReport);
+                return isMatch(flattenedReport, clearQueryFilter);
+            } else if(report.consumptionReportingUnits) {
+                const filteredUnits = filter(report.consumptionReportingUnits, unit => {
+                    const sameStartTime = (queryFilter.startTime) ? unit.startTime === queryFilter.startTime : true;
+                    const sameDuration = (queryFilter.duration) ? unit.duration === +queryFilter.duration : true;
+                    return sameStartTime && sameDuration;
+                });
+
+                const sameReportingClientId = (queryFilter.reportingClientId) ? report.reportingClientId === queryFilter.reportingClientId : true;
+                return sameReportingClientId && filteredUnits.length > 0;
+            }
+            return true;
         });
     }
 }

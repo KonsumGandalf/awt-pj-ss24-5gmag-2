@@ -14,7 +14,9 @@ var saiRouter = require('./routes/service-access-information');
 var m8Router = require('./routes/m8');
 var consumptionReportingRouter = require('./routes/consumption-reporting');
 var metricsReportingRouter = require('./routes/metrics-reporting');
-const metricsFrontendRouter = require('./routes/reporting-ui/metrics');
+const metricsUIRouter = require('./routes/reporting-ui/metrics');
+const consumptionUIRouter = require('./routes/reporting-ui/consumption');
+const sseRouter = require('./routes/reporting-ui/sse');
 
 var app = express();
 app.use(compression());
@@ -34,6 +36,10 @@ app.use('/3gpp-m5/v2/service-access-information', saiRouter);
 app.use('/m8/', m8Router);
 app.use('/3gpp-m5/v2/consumption-reporting', consumptionReportingRouter);
 app.use('/3gpp-m5/v2/metrics-reporting', metricsReportingRouter);
-app.use('/reporting-ui/metrics', metricsFrontendRouter);
+
+const UI_ENDPOINT = '/reporting-ui'
+app.use(`${UI_ENDPOINT}/metrics`, metricsUIRouter);
+app.use(`${UI_ENDPOINT}/consumption`, consumptionUIRouter);
+app.use(`${UI_ENDPOINT}/sse`, sseRouter);
 
 module.exports = app;

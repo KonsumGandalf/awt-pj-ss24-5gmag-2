@@ -19,9 +19,10 @@ import { EnvContext } from '../../env.context';
 import { useReportList } from '../../hooks/api';
 import { EMetricsType } from '../../models/enums/metrics/metrics-type.enum';
 import { ESortingOrder } from '../../models/enums/shared/sorting-order.enum';
+import { ESseTopic } from '../../models/enums/shared/sse-topic.enum';
 import { TMetricsDetailsRequestParams } from '../../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../../models/types/requests/metrics-overview-request-params.interface';
-import { TMetricsOverviewReport } from '../../models/types/responses/metrics-overview-report.interface';
+import { TMetricsOverviewReport } from '../../models/types/responses/metrics-overview-report.type';
 
 import './Overview.scss';
 
@@ -112,7 +113,7 @@ function Overview() {
 
     return (
         <div className="page-wrapper">
-            <ReloadButton action={onReload} />
+            <ReloadButton action={onReload} topic={ESseTopic.METRICS}/>
             <DataGrid
                 rows={reportList}
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}

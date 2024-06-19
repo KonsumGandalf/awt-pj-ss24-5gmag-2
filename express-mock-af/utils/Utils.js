@@ -8,14 +8,14 @@ const { BehaviorSubject } = require('rxjs');
 class Utils {
     static fileWritten$ = new BehaviorSubject('');
 
-    static async writeToDisk(filepath, content) {
+    static async writeToDisk(filepath, content, topic) {
         return new Promise((resolve, reject) => {
             fs.mkdirSync(path.dirname(filepath), { recursive: true });
             fs.writeFile(filepath, content, (err) => {
                 if (err) {
                     reject(err);
                 } else {
-                    this.fileWritten$.next(content);
+                    this.fileWritten$.next({ content, topic });
                     resolve();
                 }
             });
@@ -26,11 +26,12 @@ class Utils {
      * Read files from directory paths and return the content of the files in utf-8 format.
      *
      * @param directoryPathRoot
+     * @param fileMatchRegex
      * @returns {Promise<*|*[]>}
      */
-    static async readFiles(directoryPathRoot) {
+    static async readFiles(directoryPathRoot, fileMatchRegex) {
         try {
-            const filePaths = await Utils.getDirectoriesRecursive(directoryPathRoot);
+            const filePaths = await Utils.getDirectoriesRecursive(directoryPathRoot, fileMatchRegex);
             return chain(filePaths)
                 .map(path => {
                     const fileContent = fs.readFileSync(path, 'utf-8');
@@ -50,10 +51,10 @@ class Utils {
      * @param path
      * @returns {Promise<unknown>}
      */
-    static async getDirectoriesRecursive(path) {
+    static async getDirectoriesRecursive(path, fileMatchRegex) {
         return new Promise((resolve, reject) => {
             dir.readFiles(path, {
-                    match: /\.xml$/
+                    match: fileMatchRegex
                 },
                 function (err, content, next) {
                     if (err) return reject(err);
