@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+<<<<<<< HEAD
 import { isNil, omitBy } from 'lodash';
 
 import { TMappedReportDetails, TMappedReportResponse } from '../models/types/metrics/qoe-report.type';
@@ -9,14 +9,17 @@ import { TMetricsOverviewReportResponse } from '../models/types/responses/metric
 import MetricReportUtils from '../utils/metric-report-utils';
 
 import { qoEMetricsFromReport } from './qoe-report';
+=======
+import { useCallback, useEffect, useMemo, useState } from 'react';
+>>>>>>> 1424047 (feat(qoe-metrics-dashboard): hooks)
 
 /**
  * Generically fetches data from the backend
  *
  * @param url - The URL to fetch data from
- * @param params - The parameters to send with the request
+ * @param params - The parameters to send with the requests
  */
-const useAxiosGet = <T>({ url, params, rerender }: { url: string; params: object; rerender?: string }) => {
+export const useAxiosGet = <T>({ url, params, rerender }: { url: string; params: object; rerender?: string }) => {
     const [response, setResponse] = useState<T>();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -49,6 +52,7 @@ const useAxiosGet = <T>({ url, params, rerender }: { url: string; params: object
 };
 
 /**
+<<<<<<< HEAD
  * Fetches the list of reports
  *
  * @param backendUrl - The URL of the backend
@@ -126,6 +130,8 @@ export const useReportDetail = (backendUrl: string, requestDetailsParams: URLSea
 };
 
 /**
+=======
+>>>>>>> 1424047 (feat(qoe-metrics-dashboard): hooks)
  * Uses the SSE to be notified when the list of reports should be reloaded
  *
  * @param backendUrl - The URL of the backend
