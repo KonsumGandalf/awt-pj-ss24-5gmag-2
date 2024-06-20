@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { isNil, omitBy } from 'lodash';
 
-import { TMappedReportDetails, TReportResponse } from '../models/types/metrics/qoe-report.type';
+import { TMappedReportDetails, TMappedReportResponse } from '../models/types/metrics/qoe-report.type';
 import { TMetricsDetailsRequestParams } from '../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
@@ -82,7 +82,7 @@ export const useReportList = (
 export const useReportDetail = (
     backendUrl: string,
     requestDetailsParams: TMetricsDetailsRequestParams
-): TReportResponse => {
+): TMappedReportResponse => {
     const {
         response: reportDetails,
         error,
