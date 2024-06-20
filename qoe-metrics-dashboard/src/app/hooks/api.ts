@@ -8,7 +8,8 @@ import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics
 import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.interface';
 import MetricReportUtils from '../utils/metric-report-utils';
 
-import { qoEMetricsFromReport, TMappedQoeMetric } from './qoe-report';
+import { qoEMetricsFromReport } from './qoe-report';
+import { TMappedQoeMetric } from '../models/types/metrics/qoe-report.type';
 
 /**
  * Generically fetches data from the backend
@@ -121,7 +122,7 @@ export const useReportDetail = (
 
         const QoeMetrics = qoEMetricsFromReport(firstReport);
 
-        const mappedReportList = {
+        const mappedReportList: TMappedReportDetails = {
             ClientID: receptionReport.clientID,
             ContentURI: receptionReport.contentURI,
             xmlns: receptionReport.xmlns,

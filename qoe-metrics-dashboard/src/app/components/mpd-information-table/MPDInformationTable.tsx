@@ -1,5 +1,5 @@
 import React from 'react';
-import { TMappedMpdInfo } from 'src/app/hooks/qoe-report';
+import { TMappedMpdInfo } from 'src/app/models/types/metrics/qoe-report.type';
 
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 
