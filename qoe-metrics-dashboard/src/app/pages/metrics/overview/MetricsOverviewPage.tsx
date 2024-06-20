@@ -1,9 +1,10 @@
-import { Alert, CircularProgress } from '@mui/material';
-import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { isAxiosError } from 'axios';
 import { defaults, pick, range } from 'lodash';
 import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { Alert, Button, CircularProgress } from '@mui/material';
+import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
 import MetricTypeIcon from '../../../components/metric-type-icon/metric-type-icon';
@@ -33,6 +34,8 @@ function MetricsOverviewPage() {
     const onReload = useCallback(() => setRerender(Date.now().toString()), []);
 
     const [provisionSessionIds] = useState<RegExp>(/1-6/);
+
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     const { reportList, error, loading } = useMetricsReportList(
         envCtx.backendUrl,
@@ -71,6 +74,39 @@ function MetricsOverviewPage() {
         navigate('/metrics/details?' + params.toString());
     }
 
+    function handleAggregation() {
+        if (!reportList) return;
+        const selectedRows = reportList.filter((row) =>
+            selectedIds.includes(`${row.recordingSessionId}-${row.reportTime}`)
+        );
+        const paramsList = selectedRows.map((row) => pick(row, ['clientID', 'recordingSessionId', 'reportTime']));
+        const params = paramsList
+            .map((row) =>
+                [
+                    `clientID=${row.clientID}`,
+                    `recordingSessionId=${row.recordingSessionId}`,
+                    `reportTime=${row.reportTime}`,
+                ].join('&')
+            )
+            .join('&');
+
+        navigate('/metrics/details?' + params);
+    }
+
+    function handleRowSelection(rowSelectionModel: GridRowSelectionModel) {
+        setSelectedIds(rowSelectionModel as string[]);
+    }
+
+    function isRowSelectable(params: GridRowParams<TMetricsOverviewReport>): boolean {
+        if (selectedIds.length) {
+            const selectedRecordingSessionId = reportList?.find(
+                (row) => `${row.recordingSessionId}-${row.reportTime}` === selectedIds[0]
+            )?.recordingSessionId;
+            return params.row.recordingSessionId === selectedRecordingSessionId;
+        }
+        return true;
+    }
+
     const columns: GridColDef<TMetricsOverviewReport>[] = [
         { field: 'clientID', headerName: 'Client ID' },
         { field: 'recordingSessionId', headerName: 'Recording Session ID' },
@@ -98,6 +134,19 @@ function MetricsOverviewPage() {
     return (
         <div className="page-wrapper">
             <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
+            <Button
+                sx={{
+                    alignSelf: 'center',
+                    color: 'background.default',
+                    size: 'large',
+                    margin: '1rem',
+                    inlineSize: '12rem',
+                }}
+                onClick={handleAggregation}
+                variant="contained"
+            >
+                Aggregate {selectedIds.length} reports
+            </Button>
             <DataGrid
                 rows={reportList}
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}
@@ -128,6 +177,8 @@ function MetricsOverviewPage() {
                     const filterQueryParams = pick(params.row, ['clientID', 'recordingSessionId', 'reportTime']);
                     handleClickMetric(filterQueryParams);
                 }}
+                isRowSelectable={isRowSelectable}
+                onRowSelectionModelChange={handleRowSelection}
                 getRowClassName={() => 'row'}
                 sx={{
                     '& .MuiDataGrid-row:hover': {
@@ -143,6 +194,9 @@ function MetricsOverviewPage() {
                             padding: '0.75rem',
                             margin: '0.5rem',
                         },
+                    },
+                    '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
+                        display: 'none',
                     },
                 }}
                 loading={loading}

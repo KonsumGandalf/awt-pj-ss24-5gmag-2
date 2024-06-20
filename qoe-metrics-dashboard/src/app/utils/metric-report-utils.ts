@@ -1,12 +1,7 @@
-import { cloneDeep } from 'lodash';
+import _ from 'lodash';
 
 import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
-import {
-    BufferLevel,
-    HttpList,
-    MPDInformation,
-    RepSwitchList,
-} from '../models/types/responses/metrics-details-report.interface';
+import { BufferLevel, HttpList, MPDInformation, RepSwitchList } from '../models/types/metrics/qoe-report.type';
 import {
     TMetricsDetailReport,
     TMetricsDetailsReportResponse,
@@ -16,10 +11,13 @@ export default class MetricReportUtils {
     static aggregateMetricReports(
         metricReports?: TMetricsDetailsReportResponse
     ): TMetricsDetailsReportResponse | undefined {
-        if (!metricReports || !metricReports.length) {
+        if (!metricReports) {
             return;
         }
-        const aggregatedReport: TMetricsDetailReport = cloneDeep(metricReports[0]);
+        if (!metricReports.length) {
+            return;
+        }
+        const aggregatedReport: TMetricsDetailReport = _.cloneDeep(metricReports[0]);
         const aggregatedReportTime: string[] = [];
         const aggregatedBl: BufferLevel = {
             BufferLevelEntry: [],
