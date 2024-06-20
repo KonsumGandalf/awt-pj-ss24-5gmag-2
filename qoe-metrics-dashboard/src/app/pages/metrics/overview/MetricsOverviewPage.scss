@@ -1,0 +1,11 @@
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: scroll;
+    padding: 2rem;
+
+    .reloadButton {
+        align-self: center;
+    }
+}

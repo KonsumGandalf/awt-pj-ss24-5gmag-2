@@ -1,12 +1,12 @@
+import { ThemeProvider } from '@mui/material';
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
-import { ThemeProvider } from '@mui/material';
-
 import App from './app/app';
-import DetailPage from './app/pages/detail-page/DetailPage';
-import Overview from './app/pages/overview/Overview';
+import ConsumptionOverviewPage from './app/pages/consumption/overview/ConsumptionOverviewPage';
+import DetailPage from './app/pages/metrics/detail/DetailPage';
+import MetricsOverviewPage from './app/pages/metrics/overview/MetricsOverviewPage';
 import { theme } from './theme';
 
 import '@fontsource/roboto/300.css';
@@ -22,33 +22,35 @@ const router = createBrowserRouter([
             {
                 path: '',
                 index: true,
-                element: <Navigate to="metrics" replace />,
+                element: <Navigate to="metrics" replace/>
             },
             {
                 path: 'metrics',
-                element: <Overview></Overview>,
+                element: <MetricsOverviewPage></MetricsOverviewPage>,
             },
             {
                 path: 'metrics/details',
-                element: <DetailPage></DetailPage>,
+                element: <DetailPage></DetailPage>
             },
             {
                 path: 'consumption',
-                element: <Overview></Overview>,
+                element: <ConsumptionOverviewPage></ConsumptionOverviewPage>,
             },
             {
                 path: 'consumption/:consumptionId',
-                element: <DetailPage></DetailPage>,
-            },
-        ],
-    },
+                element: <DetailPage></DetailPage>
+            }
+        ]
+    }
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+);
 root.render(
     <StrictMode>
         <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
+            <RouterProvider router={router}/>
         </ThemeProvider>
     </StrictMode>
 );
