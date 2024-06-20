@@ -1,5 +1,39 @@
 import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
 
+export type TMappedQoeMetric = {
+    mpdInfo: TMappedMpdInfo[];
+    bufferLevel: TMappedBufferLevel[];
+    httpList: TMappedHttpList[];
+    repSwitchList: TMappedRepSwitchList[];
+};
+
+export type TMappedMpdInfo = {
+    mimeType: string;
+    bandwidth: number;
+    representationId: string;
+    codecs: string;
+    height?: string;
+    width?: string;
+    frameRate?: string;
+};
+
+export type TMappedBufferLevel = {
+    level: number;
+    timeStamp: number;
+};
+
+export type TMappedHttpList = {
+    type: string;
+    duration: number;
+    transferedBytes: number;
+};
+
+export type TMappedRepSwitchList = {
+    MimeType: string;
+    timeStamp: number;
+    bandwidth: number;
+};
+
 export interface QoeMetric {
     [EMetricsType.BUFFER_LEVEL]?: BufferLevel;
     [EMetricsType.HTTP_LIST]?: HttpList;
