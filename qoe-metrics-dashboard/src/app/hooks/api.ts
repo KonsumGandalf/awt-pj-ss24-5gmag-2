@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { isNil, omitBy } from 'lodash';
 
-import { TMetricsDetailsRequestParams } from '../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
 import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.interface';
+import MetricReportUtils from '../utils/metric-report-utils';
 
 /**
  * Generically fetches data from the backend
@@ -18,8 +19,9 @@ const useAxiosGet = <T>({ url, params, rerender }: { url: string; params: object
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const memoizedParams = useMemo(() => params, Object.values(params));
+    const stringifiedParams = JSON.stringify(Object.values(params));
+    // eslint-disable-next-line react-hooks/exhaustive-deps,
+    const memoizedParams = useMemo(() => params, [stringifiedParams]);
 
     useEffect(() => {
         const fetchData = () => {
@@ -76,17 +78,21 @@ export const useReportList = (
  * @param backendUrl - The URL of the backend
  * @param requestDetailsParams - The filter parameters for the request
  */
-export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetricsDetailsRequestParams) => {
+export const useReportDetail = (backendUrl: string, requestDetailsParams: URLSearchParams) => {
+    const params = {
+        recordingSessionId: requestDetailsParams.get('recordingSessionId'),
+        reportTime: requestDetailsParams.getAll('reportTime'),
+    };
     const {
         response: reportDetails,
         error,
         loading,
     } = useAxiosGet<TMetricsDetailsReportResponse>({
         url: `${backendUrl}/reporting-ui/metrics/details`,
-        params: requestDetailsParams,
+        params: params,
     });
-
-    return { reportDetails, error, loading };
+    const aggregatedMetricReports = MetricReportUtils.aggregateMetricReports(reportDetails);
+    return { reportDetails: aggregatedMetricReports, error, loading };
 };
 
 /**
