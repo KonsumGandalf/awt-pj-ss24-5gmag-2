@@ -1,6 +1,6 @@
 const xml2js = require("xml2js");
 const {
-  map,
+  filter,
   pick,
   chain,
   merge,
@@ -124,6 +124,86 @@ class ReportsService {
       .value();
   }
 
+  async generateConsumptionReport(provisionSessionIds, queryFilter) {
+    const readContent = (
+      await Promise.all(
+        provisionSessionIds.map(async (id) => {
+          return Utils.readFiles(`public/reports/${id}/consumption_reports`);
+        })
+      )
+    )
+      .filter((content) => content.length !== 0)
+      .flat();
+    const transformedJsonResponse = this.transformJSONtoReport(readContent);
+
+    return await this.overviewConsumptionReport(
+      transformedJsonResponse,
+      queryFilter
+    );
+  }
+
+  async overviewConsumptionReport(reports, queryFilter) {
+    const {} = defaults();
+
+    return chain(reports)
+      .map((report) => {
+        return report;
+      })
+      .value();
+  }
+
+  /**
+   * Returns an overview of all the metrics for the given provisionSessionIds
+   *
+   * @param reports
+   * @param queryFilter
+   * @returns {Promise<(any)[]>}
+   */
+  async overviewMetricsReport(reports, queryFilter) {
+    const { orderProperty, offset, limit, sortingOrder } = defaults(
+      queryFilter,
+      {
+        orderProperty: "reportTime",
+        sortingOrder: "desc",
+      }
+    );
+
+    return chain(reports)
+      .map((report) => {
+        const receptionReport = pick(report.ReceptionReport, [
+          "clientID",
+          "contentURI",
+        ]);
+
+        const qoeReport = pick(report.ReceptionReport.QoeReport, [
+          "reportPeriod",
+          "reportTime",
+          "recordingSessionId",
+        ]);
+
+        const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
+        const availableMetrics = Array.isArray(qoeMetric)
+          ? qoeMetric.map((metric) => {
+              return Object.keys(metric)[0];
+            })
+          : [];
+
+        return defaults({}, receptionReport, qoeReport, { availableMetrics });
+      })
+      .orderBy(orderProperty, sortingOrder)
+      .thru((chainInstance) => {
+        let result = chain(chainInstance);
+        if (offset !== undefined) {
+          result = result.drop(offset);
+        }
+        if (limit !== undefined) {
+          result = result.take(limit);
+        }
+        return result;
+      })
+      .value();
+  }
+
   /**
    * Filters reports based on the query parameters
    *
@@ -134,16 +214,37 @@ class ReportsService {
   filterReports(reportsList, queryFilter) {
     const clearQueryFilter = omitBy(queryFilter, isNil);
     return reportsList.filter((report) => {
-      const flattenedReport = merge(
-        report.ReceptionReport,
-        report.ReceptionReport.QoeReport
-      );
-      return (
-        flattenedReport.recordingSessionId ===
-          clearQueryFilter.recordingSessionId &&
-        (flattenedReport.reportTime === clearQueryFilter.reportTime ||
-          clearQueryFilter.reportTime.includes(flattenedReport.reportTime))
-      );
+      if (report.ReceptionReport) {
+        const flattenedReport = merge(
+          report.ReceptionReport,
+          report.ReceptionReport.QoeReport
+        );
+        return (
+          flattenedReport.recordingSessionId ===
+            clearQueryFilter.recordingSessionId &&
+          (flattenedReport.reportTime === clearQueryFilter.reportTime ||
+            clearQueryFilter.reportTime.includes(flattenedReport.reportTime))
+        );
+      } else if (report.consumptionReportingUnits) {
+        const filteredUnits = filter(
+          report.consumptionReportingUnits,
+          (unit) => {
+            const sameStartTime = queryFilter.startTime
+              ? unit.startTime === queryFilter.startTime
+              : true;
+            const sameDuration = queryFilter.duration
+              ? unit.duration === +queryFilter.duration
+              : true;
+            return sameStartTime && sameDuration;
+          }
+        );
+
+        const sameReportingClientId = queryFilter.reportingClientId
+          ? report.reportingClientId === queryFilter.reportingClientId
+          : true;
+        return sameReportingClientId && filteredUnits.length > 0;
+      }
+      return true;
     });
   }
 }
