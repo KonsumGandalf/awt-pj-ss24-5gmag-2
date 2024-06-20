@@ -1,11 +1,26 @@
 import React from 'react';
-import { TMappedReportDetails } from 'src/app/hooks/api';
 
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import {
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@mui/material';
 
 import { IReceptionReport } from '../../models/types/responses/metrics-details-report.interface';
 
-function BasicInformationTables({ reportDetails }: { reportDetails: TMappedReportDetails }) {
+function BasicInformationTables({
+    receptionReport,
+}: {
+    receptionReport?: IReceptionReport;
+}) {
+    if (!receptionReport) {
+        return null;
+    }
+
     return (
         <Box display={'flex'} gap={'2rem'} flexWrap={'wrap'}>
             <Box
@@ -17,7 +32,11 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                 flexDirection={'column'}
                 flex={1}
             >
-                <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
+                <Typography
+                    component={'h2'}
+                    variant="h5"
+                    paddingBottom={'1rem'}
+                >
                     Reception Report
                 </Typography>
                 <Table>
@@ -30,12 +49,14 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                     <TableBody>
                         <TableRow>
                             <TableCell>clientID</TableCell>
-                            <TableCell>{reportDetails.ClientID}</TableCell>
+                            <TableCell>{receptionReport.clientID}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>contentURI</TableCell>
                             <TableCell>
-                                <a href={reportDetails.ContentURI}>{reportDetails.ContentURI}</a>
+                                <a href={receptionReport.contentURI}>
+                                    {receptionReport.contentURI}
+                                </a>
                             </TableCell>
                         </TableRow>
                     </TableBody>
@@ -50,7 +71,11 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                 flexDirection={'column'}
                 flex={1}
             >
-                <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
+                <Typography
+                    component={'h2'}
+                    variant="h5"
+                    paddingBottom={'1rem'}
+                >
                     QoE Report
                 </Typography>
                 <Table>
@@ -63,15 +88,21 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                     <TableBody>
                         <TableRow>
                             <TableCell>recordingSessionId</TableCell>
-                            <TableCell>{reportDetails.QoeReport.RecordingSessionID}</TableCell>
+                            <TableCell>
+                                {receptionReport.QoeReport.recordingSessionId}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>reportPeriod</TableCell>
-                            <TableCell>{reportDetails.QoeReport.ReportPeriod}</TableCell>
+                            <TableCell>
+                                {receptionReport.QoeReport.reportPeriod}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>reportTime</TableCell>
-                            <TableCell>{reportDetails.QoeReport.ReportTime}</TableCell>
+                            <TableCell>
+                                {receptionReport.QoeReport.reportTime}
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
