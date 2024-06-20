@@ -10,11 +10,11 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { TMappedHttpList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
+import { HttpList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick } from '../utils/chart';
 
 type DataPoint = {
@@ -24,25 +24,39 @@ type DataPoint = {
 
 type TypeDataPoint = Record<string, DataPoint[]>;
 
-function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
-    const [scatterVisibility, setScatterisibility] = useState<Record<string, boolean>>(
-        httpList.reduce((acc, entry) => {
-            acc[entry.type] = true;
-            return acc;
-        }, {} as Record<string, boolean>)
-    );
+function HttpListChart({ httpList }: { httpList: HttpList | undefined }) {
+    const [scatterVisibility, setScatterisibility] = useState<
+        Record<string, boolean>
+    >({});
 
-    const dataByTypeRef = httpList.reduce((acc, entry) => {
-        if (!acc[entry.type]) {
-            acc[entry.type] = [];
+    const dataByTypeRef = useRef<TypeDataPoint>({});
+
+    useEffect(() => {
+        if (httpList) {
+            dataByTypeRef.current = httpList.HttpListEntry.reduce(
+                (acc: TypeDataPoint, entry) => {
+                    if (!acc[entry.type]) {
+                        acc[entry.type] = [];
+                        setScatterisibility((prev) => ({
+                            ...prev,
+                            [entry.type]: true,
+                        }));
+                    }
+
+                    acc[entry.type].push({
+                        duration: Number(entry.Trace.d),
+                        transferedBytes: Number(entry.Trace.b),
+                    });
+                    return acc;
+                },
+                {}
+            );
         }
+    }, [httpList]);
 
-        acc[entry.type].push({
-            duration: Number(entry.duration),
-            transferedBytes: Number(entry.transferedBytes),
-        });
-        return acc;
-    }, {} as TypeDataPoint);
+    if (!httpList) {
+        return <Box>No data found for Http List</Box>;
+    }
 
     return (
         <Box
@@ -57,7 +71,11 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                 Http List
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
-                <ScatterChart width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
+                <ScatterChart
+                    width={500}
+                    height={1000}
+                    margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
+                >
                     <CartesianGrid strokeDasharray="3 3" />
 
                     <XAxis
@@ -66,9 +84,15 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         type="number"
                         unit={'ms'}
                         domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        tick={(args) => (
+                            <TypographyTick {...args}></TypographyTick>
+                        )}
                     >
-                        <Label value="Duration in ms" position="bottom" style={{ textAnchor: 'middle' }}></Label>
+                        <Label
+                            value="Duration in ms"
+                            position="bottom"
+                            style={{ textAnchor: 'middle' }}
+                        ></Label>
                     </XAxis>
                     <YAxis
                         dataKey="transferedBytes"
@@ -76,7 +100,9 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         type="number"
                         unit={'bytes'}
                         domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        tick={(args) => (
+                            <TypographyTick {...args}></TypographyTick>
+                        )}
                     >
                         <Label
                             value="Transferred Bytes"
@@ -102,15 +128,17 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         }}
                         height={40}
                     />
-                    {Object.entries(dataByTypeRef).map(([type, data], index) => (
-                        <Scatter
-                            key={type}
-                            name={type}
-                            data={data}
-                            fill={graphColors[index % graphColors.length]}
-                            hide={!scatterVisibility[type]}
-                        />
-                    ))}
+                    {Object.entries(dataByTypeRef.current).map(
+                        ([type, data], index) => (
+                            <Scatter
+                                key={type}
+                                name={type}
+                                data={data}
+                                fill={graphColors[index % graphColors.length]}
+                                hide={!scatterVisibility[type]}
+                            />
+                        )
+                    )}
                 </ScatterChart>
             </ResponsiveContainer>
         </Box>
