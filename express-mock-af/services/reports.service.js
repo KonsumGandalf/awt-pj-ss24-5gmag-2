@@ -3,30 +3,37 @@ const { filter, pick, chain, merge, isMatch, isNil, omitBy, defaults } = require
 const Utils = require('../utils/Utils');
 
 class ReportsService {
+  /**
+   * Translates XML to JSON
+   *
+   * @param xml
+   * @returns {Promise<*>}
+   */
+  async translateXmlToJson(xml) {
+    return xml2js.parseStringPromise(xml, {
+      mergeAttrs: true,
+      explicitArray: false,
+    });
+  }
 
-    /**
-     * Translates XML to JSON
-     *
-     * @param xml
-     * @returns {Promise<*>}
-     */
-    async translateXmlToJson(xml) {
-        return xml2js.parseStringPromise(xml, { mergeAttrs: true, explicitArray: false });
-    }
-
-    /**
-     * Transforms XML to a report
-     *
-     * @param XmlFiles
-     * @returns {Promise<any[]>}
-     */
-    async transformXmlToReport(XmlFiles) {
-        return Object.values(omitBy(await Promise.all(XmlFiles.map(async (file) => {
+  /**
+   * Transforms XML to a report
+   *
+   * @param XmlFiles
+   * @returns {Promise<any[]>}
+   */
+  async transformXmlToReport(XmlFiles) {
+    return Object.values(
+      omitBy(
+        await Promise.all(
+          XmlFiles.map(async (file) => {
             return await this.translateXmlToJson(file);
-        })), isNil));
-    }
-
-
+          })
+        ),
+        isNil
+      )
+    );
+  }
 
     transformJSONtoReport(jsonArray) {
         if (Array.isArray(jsonArray)) {
@@ -52,9 +59,14 @@ class ReportsService {
             })
         )).filter(content => content.length !== 0).flat();
 
-        const transformedJsonResponse = await this.transformXmlToReport(readContent);
-        return await this.overviewMetricsReport(transformedJsonResponse, queryFilter);
-    }
+    const transformedJsonResponse = await this.transformXmlToReport(
+      readContent
+    );
+    return await this.overviewMetricsReport(
+      transformedJsonResponse,
+      queryFilter
+    );
+  }
 
     async generateConsumptionReport(provisionSessionIds, queryFilter) {
         const readContent = (await Promise.all(
@@ -93,42 +105,41 @@ class ReportsService {
             }
         );
 
-        return chain(reports)
-            .map((report) => {
-                const receptionReport = pick(report.ReceptionReport, [
-                    'clientID',
-                    'contentURI'
-                ]);
+    return chain(reports)
+      .map((report) => {
+        const receptionReport = pick(report.ReceptionReport, [
+          "clientID",
+          "contentURI",
+        ]);
 
-                const qoeReport = pick(report.ReceptionReport.QoeReport, [
-                    'reportPeriod',
-                    'reportTime',
-                    'recordingSessionId'
-                ]);
+        const qoeReport = pick(report.ReceptionReport.QoeReport, [
+          "reportPeriod",
+          "reportTime",
+          "recordingSessionId",
+        ]);
 
-                const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
-                const availableMetrics = Array.isArray(qoeMetric)
-                    ? qoeMetric.map(metric => {
-                        return Object.keys(metric)[0]
-                    })
-                    : [];
-
-
-                return defaults({}, receptionReport, qoeReport, { availableMetrics });
+        const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
+        const availableMetrics = Array.isArray(qoeMetric)
+          ? qoeMetric.map((metric) => {
+              return Object.keys(metric)[0];
             })
-            .orderBy(orderProperty, sortingOrder)
-            .thru(chainInstance => {
-                let result = chain(chainInstance);
-                if (offset !== undefined) {
-                    result = result.drop(offset);
-                }
-                if (limit !== undefined) {
-                    result = result.take(limit);
-                }
-                return result;
-            })
-            .value();
-    }
+          : [];
+
+        return defaults({}, receptionReport, qoeReport, { availableMetrics });
+      })
+      .orderBy(orderProperty, sortingOrder)
+      .thru((chainInstance) => {
+        let result = chain(chainInstance);
+        if (offset !== undefined) {
+          result = result.drop(offset);
+        }
+        if (limit !== undefined) {
+          result = result.take(limit);
+        }
+        return result;
+      })
+      .value();
+  }
 
     /**
      * Filters reports based on the query parameters
@@ -157,6 +168,5 @@ class ReportsService {
         });
     }
 }
-
 
 module.exports = ReportsService;
