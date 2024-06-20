@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { isNil, omitBy } from 'lodash';
 
+import { TMappedReportDetails, TReportResponse } from '../models/types/metrics/qoe-report.type';
 import { TMetricsDetailsRequestParams } from '../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
@@ -9,7 +10,6 @@ import { TMetricsOverviewReportResponse } from '../models/types/responses/metric
 import MetricReportUtils from '../utils/metric-report-utils';
 
 import { qoEMetricsFromReport } from './qoe-report';
-import { TMappedQoeMetric } from '../models/types/metrics/qoe-report.type';
 
 /**
  * Generically fetches data from the backend
@@ -73,27 +73,6 @@ export const useReportList = (
     });
 
     return { reportList, error, loading };
-};
-
-export type TReportResponse = {
-    reportDetails?: TMappedReportDetails;
-    error: any;
-    loading: boolean;
-};
-
-export type TMappedReportDetails = {
-    ClientID: string;
-    ContentURI: string;
-    xmlns: string;
-    'xmlns:sv': string;
-    'xsi:schemaLocation': string;
-    'xmlns:xsi': string;
-    QoeReport: {
-        RecordingSessionID: string;
-        ReportPeriod: string;
-        ReportTime: string;
-        PeriodID: string;
-    } & TMappedQoeMetric;
 };
 
 /**

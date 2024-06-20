@@ -1,5 +1,26 @@
 import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
 
+export type TReportResponse = {
+    reportDetails?: TMappedReportDetails;
+    error: any;
+    loading: boolean;
+};
+
+export type TMappedReportDetails = {
+    ClientID: string;
+    ContentURI: string;
+    xmlns: string;
+    'xmlns:sv': string;
+    'xsi:schemaLocation': string;
+    'xmlns:xsi': string;
+    QoeReport: {
+        RecordingSessionID: string;
+        ReportPeriod: string;
+        ReportTime: string;
+        PeriodID: string;
+    } & TMappedQoeMetric;
+};
+
 export type TMappedQoeMetric = {
     mpdInfo: TMappedMpdInfo[];
     bufferLevel: TMappedBufferLevel[];
