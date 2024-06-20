@@ -1,22 +1,17 @@
 import dayjs from 'dayjs';
 import { CartesianGrid, Label, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { TMappedBufferLevel } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography, useTheme } from '@mui/material';
 
-import { BufferLevel } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
-function BufferLevelChart({ bufferLevel }: { bufferLevel: BufferLevel | undefined }) {
+function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }) {
     const theme = useTheme();
 
-    if (!bufferLevel) {
+    if (!bufferLevel || !bufferLevel.length) {
         return <Box>No data</Box>;
     }
-
-    const data = bufferLevel.BufferLevelEntry.map((entry) => ({
-        level: Number(entry.level),
-        timestamp: new Date(entry.t).getTime(),
-    }));
 
     return (
         <Box
@@ -31,10 +26,15 @@ function BufferLevelChart({ bufferLevel }: { bufferLevel: BufferLevel | undefine
                 Buffer Level
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
-                <LineChart data={data} width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
+                <LineChart
+                    data={bufferLevel}
+                    width={500}
+                    height={1000}
+                    margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
+                >
                     <CartesianGrid />
                     <XAxis
-                        dataKey="timestamp"
+                        dataKey="timeStamp"
                         tick={(args) => <XAxisTick {...args}></XAxisTick>}
                         height={80}
                         allowDuplicatedCategory={true}

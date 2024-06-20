@@ -1,63 +1,54 @@
-import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
+export type TMappedReportResponse = {
+    reportDetails?: TMappedReportDetails;
+    error: any;
+    loading: boolean;
+};
 
-export interface QoeMetric {
-    [EMetricsType.BUFFER_LEVEL]?: BufferLevel;
-    [EMetricsType.HTTP_LIST]?: HttpList;
-    [EMetricsType.MPD_INFORMATION]?: MPDInformation[];
-    [EMetricsType.REP_SWITCH_LIST]?: RepSwitchList;
-}
+export type TMappedReportDetails = {
+    ClientID: string;
+    ContentURI: string;
+    xmlns: string;
+    'xmlns:sv': string;
+    'xsi:schemaLocation': string;
+    'xmlns:xsi': string;
+    QoeReport: {
+        RecordingSessionID: string;
+        ReportPeriod: string;
+        ReportTime: string;
+        PeriodID: string;
+    } & TMappedQoeMetric;
+};
 
-export interface RepSwitchList {
-    RepSwitchEvent: RepSwitchEvent[];
-}
+export type TMappedQoeMetric = {
+    mpdInfo: TMappedMpdInfo[];
+    bufferLevel: TMappedBufferLevel[];
+    httpList: TMappedHttpList[];
+    repSwitchList: TMappedRepSwitchList[];
+};
 
-export interface RepSwitchEvent {
-    mt: string;
-    t: string;
-    to: string;
-}
-
-export interface MPDInformation {
-    representationId: string;
-    Mpdinfo: Mpdinfo;
-}
-
-export interface Mpdinfo {
-    bandwidth: string;
-    codecs: string;
+export type TMappedMpdInfo = {
     mimeType: string;
-    frameRate?: string;
+    bandwidth: number;
+    representationId: string;
+    codecs: string;
     height?: string;
     width?: string;
-}
+    frameRate?: string;
+};
 
-export interface HttpList {
-    HttpListEntry: HttpListEntry[];
-}
+export type TMappedBufferLevel = {
+    level: number;
+    timeStamp: number;
+};
 
-export interface HttpListEntry {
-    actualurl: string;
-    interval: string;
-    range: string;
-    responsecode: string;
-    trequest: string;
-    tresponse: string;
+export type TMappedHttpList = {
     type: string;
-    url: string;
-    Trace: Trace;
-}
+    duration: number;
+    transferedBytes: number;
+};
 
-export interface Trace {
-    b: string;
-    d: string;
-    s: string;
-}
-
-export interface BufferLevel {
-    BufferLevelEntry: BufferLevelEntry[];
-}
-
-export interface BufferLevelEntry {
-    level: string;
-    t: string;
-}
+export type TMappedRepSwitchList = {
+    MimeType: string;
+    timeStamp: number;
+    bandwidth: number;
+};

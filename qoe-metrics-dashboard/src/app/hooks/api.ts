@@ -2,10 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { isNil, omitBy } from 'lodash';
 
+import { TMappedReportDetails, TMappedReportResponse } from '../models/types/metrics/qoe-report.type';
 import { TMetricsDetailsRequestParams } from '../models/types/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../models/types/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/responses/metrics-details-report.interface';
 import { TMetricsOverviewReportResponse } from '../models/types/responses/metrics-overview-report.type';
+
+import { qoEMetricsFromReport } from './qoe-report';
 
 /**
  * Generically fetches data from the backend
@@ -76,7 +79,10 @@ export const useReportList = (
  * @param backendUrl - The URL of the backend
  * @param requestDetailsParams - The filter parameters for the request
  */
-export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetricsDetailsRequestParams) => {
+export const useReportDetail = (
+    backendUrl: string,
+    requestDetailsParams: TMetricsDetailsRequestParams
+): TMappedReportResponse => {
     const {
         response: reportDetails,
         error,
@@ -86,7 +92,34 @@ export const useReportDetail = (backendUrl: string, requestDetailsParams: TMetri
         params: requestDetailsParams,
     });
 
-    return { reportDetails, error, loading };
+    if (reportDetails) {
+        const firstReport = reportDetails[0];
+
+        const receptionReport = firstReport.ReceptionReport;
+
+        const QoeMetrics = qoEMetricsFromReport(firstReport);
+
+        const mappedReportList: TMappedReportDetails = {
+            ClientID: receptionReport.clientID,
+            ContentURI: receptionReport.contentURI,
+            xmlns: receptionReport.xmlns,
+            'xmlns:sv': receptionReport['xmlns:sv'],
+            'xsi:schemaLocation': receptionReport['xsi:schemaLocation'],
+            'xmlns:xsi': receptionReport['xmlns:xsi'],
+            QoeReport: {
+                RecordingSessionID: receptionReport.QoeReport.recordingSessionId,
+                ReportPeriod: receptionReport.QoeReport.reportPeriod,
+                ReportTime: receptionReport.QoeReport.reportTime,
+                PeriodID: receptionReport.QoeReport.periodID,
+
+                ...QoeMetrics,
+            },
+        };
+
+        return { reportDetails: mappedReportList, error, loading };
+    }
+
+    return { error, loading };
 };
 
 /**
