@@ -132,7 +132,7 @@ function ConsumptionOverviewPage() {
 
     return (
         <div className="page-wrapper">
-            <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
+            <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION} />
             <DataGrid
                 rows={reportList}
                 columns={columns}

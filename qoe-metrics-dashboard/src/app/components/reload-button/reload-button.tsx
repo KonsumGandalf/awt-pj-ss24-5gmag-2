@@ -22,7 +22,7 @@ export function ReloadButton({ action, topic }: { action: () => void, topic: str
         color: theme.palette.background.default,
         size: 'large',
         margin: '1rem',
-        inlineSize: '12rem',
+        inlineSize: '15rem',
     }));
 
     const handleReload = () => {
@@ -39,7 +39,7 @@ export function ReloadButton({ action, topic }: { action: () => void, topic: str
             startIcon={<ReplayTwoTone />}
             variant={'contained'}
         >
-            Reload count: {reloadCount}
+            {topic} count: {reloadCount}
         </ReloadButton>
     );
 }
