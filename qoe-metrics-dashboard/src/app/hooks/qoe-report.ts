@@ -1,6 +1,7 @@
 import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
-import { QoeMetric, TMappedQoeMetric, TMappedRepSwitchList } from '../models/types/metrics/qoe-report.type';
+import { TMappedQoeMetric, TMappedRepSwitchList } from '../models/types/metrics/qoe-report.type';
 import { TMetricsDetailReport } from '../models/types/responses/metrics-details-report.interface';
+import { QoeMetric } from '../models/types/responses/metrics-details-report.interface';
 
 export const qoEMetricsFromReport = (report: TMetricsDetailReport): TMappedQoeMetric => {
     const QoeMetric = report?.ReceptionReport?.QoeReport?.QoeMetric;
