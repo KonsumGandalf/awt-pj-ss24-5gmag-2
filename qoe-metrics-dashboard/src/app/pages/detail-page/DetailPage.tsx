@@ -36,17 +36,12 @@ function DetailPage() {
 
     return (
         <Box padding={'2rem'} component={'div'} overflow={'scroll'}>
-            {reportDetails.map((report) => (
-                <DetailPageContext.Provider
-                    value={reportDetails}
-                    key={
-                        report.ReceptionReport.QoeReport.recordingSessionId +
-                        report.ReceptionReport.QoeReport.reportTime
-                    }
-                >
-                    <DetailContent report={report} />
-                </DetailPageContext.Provider>
-            ))}
+            <DetailPageContext.Provider
+                value={reportDetails}
+                key={reportDetails.QoeReport.RecordingSessionID + reportDetails.QoeReport.ReportTime}
+            >
+                <DetailContent reportDetails={reportDetails} />
+            </DetailPageContext.Provider>
         </Box>
     );
 }

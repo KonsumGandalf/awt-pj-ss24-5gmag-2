@@ -1,19 +1,10 @@
 import React from 'react';
+import { TMappedMpdInfo } from 'src/app/models/types/metrics/qoe-report.type';
 
-import {
-    Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Typography,
-} from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 
-import { MPDInformation } from '../../models/types/metrics/qoe-report.type';
-
-function MPDInformationTable({ mpdInfo }: { mpdInfo?: MPDInformation[] }) {
-    if (!mpdInfo) {
+function MPDInformationTable({ mpdInfo }: { mpdInfo: TMappedMpdInfo[] }) {
+    if (mpdInfo.length === 0) {
         return null;
     }
 
@@ -45,14 +36,12 @@ function MPDInformationTable({ mpdInfo }: { mpdInfo?: MPDInformation[] }) {
                     {mpdInfo.map((info) => (
                         <TableRow key={info.representationId}>
                             <TableCell>{info.representationId}</TableCell>
-                            <TableCell>{info.Mpdinfo.bandwidth}</TableCell>
-                            <TableCell>{info.Mpdinfo.codecs}</TableCell>
-                            <TableCell>{info.Mpdinfo.mimeType}</TableCell>
-                            <TableCell>{info.Mpdinfo.height ?? '--'}</TableCell>
-                            <TableCell>{info.Mpdinfo.width ?? '--'}</TableCell>
-                            <TableCell>
-                                {info.Mpdinfo.frameRate ?? '--'}
-                            </TableCell>
+                            <TableCell>{info.bandwidth}</TableCell>
+                            <TableCell>{info.codecs}</TableCell>
+                            <TableCell>{info.mimeType}</TableCell>
+                            <TableCell>{info.height ?? '--'}</TableCell>
+                            <TableCell>{info.width ?? '--'}</TableCell>
+                            <TableCell>{info.frameRate ?? '--'}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
