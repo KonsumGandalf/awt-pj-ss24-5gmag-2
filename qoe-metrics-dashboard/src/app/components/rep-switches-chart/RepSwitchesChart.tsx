@@ -2,11 +2,11 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { TMappedMpdInfo, TMappedRepSwitchList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
+import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
@@ -18,11 +18,9 @@ function RepSwitchesChart({
 }) {
     const [mimeTypeVisibility, setMimeTypeVisibility] = useState<Record<string, boolean>>({});
 
-    if (!repSwitchList || !mpdInfo) {
+    if (!repSwitchList.length || !mpdInfo.length) {
         return null;
     }
-
-    console.log(repSwitchList);
 
     const mimeTypes = [...new Set(repSwitchList.map((i) => i.MimeType))];
 
