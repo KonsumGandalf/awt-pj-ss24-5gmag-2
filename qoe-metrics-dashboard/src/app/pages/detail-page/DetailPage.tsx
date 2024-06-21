@@ -5,7 +5,6 @@ import { Box, CircularProgress } from '@mui/material';
 
 import { EnvContext } from '../../env.context';
 import { useReportDetail } from '../../hooks/api';
-import { TMetricsDetailsRequestParams } from '../../models/types/requests/metrics-details-request-params.type';
 
 import { DetailContent } from './DetailContent';
 import { DetailPageContext } from './DetailPage.context';
@@ -17,10 +16,7 @@ function DetailPage() {
 
     const [searchParams] = useSearchParams();
 
-    const { reportDetails, error, loading } = useReportDetail(
-        envCtx.backendUrl,
-        searchParams as unknown as TMetricsDetailsRequestParams
-    );
+    const { reportDetails, error, loading } = useReportDetail(envCtx.backendUrl, searchParams);
 
     if (loading) {
         return (

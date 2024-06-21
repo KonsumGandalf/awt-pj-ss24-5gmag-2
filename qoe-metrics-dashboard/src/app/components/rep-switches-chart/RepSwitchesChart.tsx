@@ -2,11 +2,11 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { TMappedMpdInfo, TMappedRepSwitchList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
+import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
@@ -18,11 +18,9 @@ function RepSwitchesChart({
 }) {
     const [mimeTypeVisibility, setMimeTypeVisibility] = useState<Record<string, boolean>>({});
 
-    if (!repSwitchList || !mpdInfo) {
+    if (!repSwitchList.length || !mpdInfo.length) {
         return null;
     }
-
-    console.log(repSwitchList);
 
     const mimeTypes = [...new Set(repSwitchList.map((i) => i.MimeType))];
 
@@ -41,18 +39,27 @@ function RepSwitchesChart({
         return acc;
     }, {} as { [key: string]: { bandwidth: number; timestamp: number }[] });
 
+    const timestamps: number[] = [];
+
+    Object.entries(dataByMimeType).forEach(([_, entries]) => {
+        timestamps.push(...entries.map((e) => e.timestamp));
+    });
+
     const data: { [key: string]: number }[] = [];
 
-    Object.entries(dataByMimeType).forEach((entry) => {
-        const [mimeType, entries] = entry;
-        const latestEntry = _.maxBy(entries, 'timestamp');
-
-        if (!latestEntry) return;
-
-        data.push({
-            timestamp: latestEntry.timestamp,
-            [mimeType]: latestEntry.bandwidth,
+    timestamps.forEach((t) => {
+        const datapoint: { [key: string]: number } = {
+            timestamp: t,
+        };
+        Object.entries(dataByMimeType).forEach(([mimeType, entries]) => {
+            const entry = _.minBy(entries, (o) => {
+                return o.timestamp > t ? Infinity : t - o.timestamp;
+            });
+            if (entry && entry.timestamp <= t) {
+                datapoint[mimeType] = entry.bandwidth;
+            }
         });
+        data.push(datapoint);
     });
 
     return (
@@ -94,8 +101,6 @@ function RepSwitchesChart({
                         />
                     </YAxis>
                     {[...mimeTypes].map((mimeType, i) => {
-                        console.log(mimeTypeVisibility[mimeType]);
-                        console.log(mimeType.toString());
                         return (
                             <Line
                                 key={mimeType.toString()}

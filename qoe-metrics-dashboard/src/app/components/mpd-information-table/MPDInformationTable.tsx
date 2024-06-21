@@ -18,7 +18,7 @@ function MPDInformationTable({ mpdInfo }: { mpdInfo: TMappedMpdInfo[] }) {
             flexDirection={'column'}
         >
             <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
-                Representation Switches
+                MPD Information
             </Typography>
             <Table>
                 <TableHead>
