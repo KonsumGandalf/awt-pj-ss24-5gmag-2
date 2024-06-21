@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { isNil, omitBy } from 'lodash';
