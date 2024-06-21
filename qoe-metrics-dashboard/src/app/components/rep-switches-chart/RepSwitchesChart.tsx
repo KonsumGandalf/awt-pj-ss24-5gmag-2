@@ -39,18 +39,27 @@ function RepSwitchesChart({
         return acc;
     }, {} as { [key: string]: { bandwidth: number; timestamp: number }[] });
 
+    const timestamps: number[] = [];
+
+    Object.entries(dataByMimeType).forEach(([_, entries]) => {
+        timestamps.push(...entries.map((e) => e.timestamp));
+    });
+
     const data: { [key: string]: number }[] = [];
 
-    Object.entries(dataByMimeType).forEach((entry) => {
-        const [mimeType, entries] = entry;
-        const latestEntry = _.maxBy(entries, 'timestamp');
-
-        if (!latestEntry) return;
-
-        data.push({
-            timestamp: latestEntry.timestamp,
-            [mimeType]: latestEntry.bandwidth,
+    timestamps.forEach((t) => {
+        const datapoint: { [key: string]: number } = {
+            timestamp: t,
+        };
+        Object.entries(dataByMimeType).forEach(([mimeType, entries]) => {
+            const entry = _.minBy(entries, (o) => {
+                return o.timestamp > t ? Infinity : t - o.timestamp;
+            });
+            if (entry && entry.timestamp <= t) {
+                datapoint[mimeType] = entry.bandwidth;
+            }
         });
+        data.push(datapoint);
     });
 
     return (
@@ -92,8 +101,6 @@ function RepSwitchesChart({
                         />
                     </YAxis>
                     {[...mimeTypes].map((mimeType, i) => {
-                        console.log(mimeTypeVisibility[mimeType]);
-                        console.log(mimeType.toString());
                         return (
                             <Line
                                 key={mimeType.toString()}
