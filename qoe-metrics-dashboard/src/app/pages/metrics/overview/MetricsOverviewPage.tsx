@@ -1,10 +1,18 @@
+import { useCallback, useContext, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { defaults, pick, range } from 'lodash';
-import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, Button, CircularProgress } from '@mui/material';
-import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    DEFAULT_GRID_AUTOSIZE_OPTIONS,
+    GridColDef,
+    GridRenderCellParams,
+    GridRowParams,
+    GridRowSelectionModel,
+    GridToolbar,
+} from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
 import MetricTypeIcon from '../../../components/metric-type-icon/metric-type-icon';

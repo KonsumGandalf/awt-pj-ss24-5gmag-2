@@ -1,10 +1,8 @@
 import { createContext } from 'react';
-import { TMappedReportDetails } from 'src/app/hooks/api';
-
-import { TMetricsDetailsReportResponse } from '../../../models/types/metrics/responses/metrics-details-report.interface';
+import { TMappedReportDetails } from '../../../models/types/metrics/qoe-report.type';
 
 export const DetailPageContext = createContext<
-    TMetricsDetailsReportResponse
+    TMappedReportDetails
 >(
-    {} as TMetricsDetailsReportResponse
+    {} as TMappedReportDetails
 );

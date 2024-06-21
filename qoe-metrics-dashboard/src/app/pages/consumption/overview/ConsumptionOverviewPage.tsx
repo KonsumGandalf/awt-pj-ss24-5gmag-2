@@ -1,9 +1,10 @@
-import { Alert, CircularProgress, TableCell, TableRow } from '@mui/material';
-import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridRowParams, GridToolbar } from '@mui/x-data-grid';
+import { useCallback, useContext, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { defaults, isNil, omitBy, pick, range } from 'lodash';
-import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { Alert, CircularProgress, TableCell, TableRow } from '@mui/material';
+import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridRowParams, GridToolbar } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
 import ReloadButton from '../../../components/reload-button/reload-button';
@@ -11,7 +12,6 @@ import { EnvContext } from '../../../env.context';
 import { useConsumptionReportList } from '../../../hooks/consumption-api';
 import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
 import { ESseTopic } from '../../../models/enums/shared/sse-topic.enum';
-import './ConsumptionOverviewPage.scss';
 import { TConsumptionDetailsRequestParams } from '../../../models/types/consumption/requests/consumption-details-request-params.interface';
 import {
     IConsumptionOverviewRequestParams,
@@ -20,6 +20,8 @@ import {
     ConsumptionReportingUnit,
     IConsumptionDetailReport,
 } from '../../../models/types/consumption/responses/consumption-details-report.interface';
+
+import './ConsumptionOverviewPage.scss';
 
 const ROWS_PER_PAGE = 5;
 const MAX_ROWS_PER_PAGE = 25;

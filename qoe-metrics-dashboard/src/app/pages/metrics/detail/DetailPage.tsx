@@ -1,14 +1,14 @@
 import { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { Box, CircularProgress } from '@mui/material';
+
 import { EnvContext } from '../../../env.context';
 import { useMetricsReportDetail } from '../../../hooks/metrics-api';
 import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
 
-import { Box, CircularProgress } from '@mui/material';
-
-import { DetailPageContext } from './DetailPageContext';
 import { DetailPageContent } from './DetailPageContent';
+import { DetailPageContext } from './DetailPageContext';
 
 import './DetailPage.scss';
 
@@ -40,17 +40,12 @@ function DetailPage() {
 
     return (
         <Box padding={'2rem'} component={'div'} overflow={'scroll'}>
-            {reportDetails.map((report) => (
-                <DetailPageContext.Provider
-                    value={reportDetails}
-                    key={
-                        report.ReceptionReport.QoeReport.recordingSessionId +
-                        report.ReceptionReport.QoeReport.reportTime
-                    }
-                >
-                    <DetailPageContent report={report} />
-                </DetailPageContext.Provider>
-            ))}
+            <DetailPageContext.Provider
+                value={reportDetails}
+                key={reportDetails.QoeReport.RecordingSessionID + reportDetails.QoeReport.ReportTime}
+            >
+                <DetailPageContent reportDetails={reportDetails} />
+            </DetailPageContext.Provider>
         </Box>
     );
 }
