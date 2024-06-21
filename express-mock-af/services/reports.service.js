@@ -4,7 +4,6 @@ const {
   pick,
   chain,
   merge,
-  isMatch,
   isNil,
   omitBy,
   defaults,
@@ -44,6 +43,16 @@ class ReportsService {
     );
   }
 
+  transformJSONtoReport(jsonArray) {
+    if (Array.isArray(jsonArray)) {
+      return jsonArray.map((jsonObj) => {
+        return JSON.parse(jsonObj);
+      });
+    }
+
+    return JSON.parse(jsonArray);
+  }
+
   /**
    * Reads multiple saved metrics reports and generates a combined report
    *
@@ -69,59 +78,6 @@ class ReportsService {
       transformedJsonResponse,
       queryFilter
     );
-  }
-
-  /**
-   * Returns an overview of all the metrics for the given provisionSessionIds
-   *
-   * @param reports
-   * @param queryFilter
-   * @returns {Promise<(any)[]>}
-   */
-  async overviewMetricsReport(reports, queryFilter) {
-    const { orderProperty, offset, limit, sortingOrder } = defaults(
-      queryFilter,
-      {
-        orderProperty: "reportTime",
-        sortingOrder: "desc",
-      }
-    );
-
-    return chain(reports)
-      .map((report) => {
-        const receptionReport = pick(report.ReceptionReport, [
-          "clientID",
-          "contentURI",
-        ]);
-
-        const qoeReport = pick(report.ReceptionReport.QoeReport, [
-          "reportPeriod",
-          "reportTime",
-          "recordingSessionId",
-        ]);
-
-        const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
-        const availableMetrics = Array.isArray(qoeMetric)
-          ? qoeMetric.map((metric) => {
-              return Object.keys(metric)[0];
-            })
-          : [];
-
-        return defaults({}, receptionReport, qoeReport, { availableMetrics });
-      })
-      .orderBy(orderProperty, sortingOrder)
-      .thru((chainInstance) => {
-        let result = chain(chainInstance);
-        if (offset !== undefined) {
-          result = result.drop(offset);
-          console.log(123);
-        }
-        if (limit !== undefined) {
-          result = result.take(limit);
-        }
-        return result;
-      })
-      .value();
   }
 
   async generateConsumptionReport(provisionSessionIds, queryFilter) {
