@@ -151,17 +151,31 @@ class ReportsService {
     filterReports(reportsList, queryFilter) {
         const clearQueryFilter = omitBy(queryFilter, isNil);
         return reportsList.filter(report => {
-            if(report.ReceptionReport) {
-                const flattenedReport = merge({}, report.ReceptionReport, report.ReceptionReport.QoeReport);
-                return isMatch(flattenedReport, clearQueryFilter);
-            } else if(report.consumptionReportingUnits) {
-                const filteredUnits = filter(report.consumptionReportingUnits, unit => {
-                    const sameStartTime = (queryFilter.startTime) ? unit.startTime === queryFilter.startTime : true;
-                    const sameDuration = (queryFilter.duration) ? unit.duration === +queryFilter.duration : true;
-                    return sameStartTime && sameDuration;
-                });
+            if (report.ReceptionReport) {
+                const qoeReport = report.ReceptionReport.QoeReport;
+                return (
+                    qoeReport.recordingSessionId ===
+                    clearQueryFilter.recordingSessionId &&
+                    (qoeReport.reportTime === clearQueryFilter.reportTime ||
+                        clearQueryFilter.reportTime.includes(qoeReport.reportTime))
+                );
+            } else if (report.consumptionReportingUnits) {
+                const filteredUnits = filter(
+                    report.consumptionReportingUnits,
+                    (unit) => {
+                        const sameStartTime = queryFilter.startTime
+                            ? unit.startTime === queryFilter.startTime
+                            : true;
+                        const sameDuration = queryFilter.duration
+                            ? unit.duration === +queryFilter.duration
+                            : true;
+                        return sameStartTime && sameDuration;
+                    }
+                );
 
-                const sameReportingClientId = (queryFilter.reportingClientId) ? report.reportingClientId === queryFilter.reportingClientId : true;
+                const sameReportingClientId = queryFilter.reportingClientId
+                    ? report.reportingClientId === queryFilter.reportingClientId
+                    : true;
                 return sameReportingClientId && filteredUnits.length > 0;
             }
             return true;
