@@ -10,9 +10,9 @@ import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics
 import { TypographyTick, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
-    repSwitchList,
-    mpdInfo,
-}: {
+                              repSwitchList,
+                              mpdInfo,
+                          }: {
     repSwitchList: TMappedRepSwitchList[];
     mpdInfo: TMappedMpdInfo[];
 }) {

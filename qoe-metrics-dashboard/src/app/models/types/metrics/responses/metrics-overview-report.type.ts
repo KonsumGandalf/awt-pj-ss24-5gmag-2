@@ -1,4 +1,4 @@
-import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
+import { EMetricsType } from '../../../enums/metrics/metrics-type.enum';
 
 /**
  * The response type for the backend endpoint for metrics report overview

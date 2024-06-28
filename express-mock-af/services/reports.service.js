@@ -1,14 +1,6 @@
-const xml2js = require("xml2js");
-const {
-  filter,
-  pick,
-  chain,
-  merge,
-  isNil,
-  omitBy,
-  defaults,
-} = require("lodash");
-const Utils = require("../utils/Utils");
+const xml2js = require('xml2js');
+const { filter, pick, chain, merge, isMatch, isNil, omitBy, defaults } = require('lodash');
+const Utils = require('../utils/Utils');
 
 class ReportsService {
   /**
@@ -43,33 +35,29 @@ class ReportsService {
     );
   }
 
-  transformJSONtoReport(jsonArray) {
-    if (Array.isArray(jsonArray)) {
-      return jsonArray.map((jsonObj) => {
-        return JSON.parse(jsonObj);
-      });
+    transformJSONtoReport(jsonArray) {
+        if (Array.isArray(jsonArray)) {
+            return jsonArray.map(jsonObj => {
+                return JSON.parse(jsonObj);
+            });
+        }
+
+        return JSON.parse(jsonArray);
     }
 
-    return JSON.parse(jsonArray);
-  }
-
-  /**
-   * Reads multiple saved metrics reports and generates a combined report
-   *
-   * @param provisionSessionIds
-   * @param queryFilter
-   * @returns {Promise<(any)[] | *>}
-   */
-  async generateMetricsReport(provisionSessionIds, queryFilter) {
-    const readContent = (
-      await Promise.all(
-        provisionSessionIds.map(async (id) => {
-          return Utils.readFiles(`public/reports/${id}/metrics_reports`);
-        })
-      )
-    )
-      .filter((content) => content.length !== 0)
-      .flat();
+    /**
+     * Reads multiple saved metrics reports and generates a combined report
+     *
+     * @param provisionSessionIds
+     * @param queryFilter
+     * @returns {Promise<(any)[] | *>}
+     */
+    async generateMetricsReport(provisionSessionIds, queryFilter) {
+        const readContent = (await Promise.all(
+            provisionSessionIds.map(async (id) => {
+                return Utils.readFiles(`public/reports/${id}/metrics_reports`);
+            })
+        )).filter(content => content.length !== 0).flat();
 
     const transformedJsonResponse = await this.transformXmlToReport(
       readContent
@@ -80,49 +68,42 @@ class ReportsService {
     );
   }
 
-  async generateConsumptionReport(provisionSessionIds, queryFilter) {
-    const readContent = (
-      await Promise.all(
-        provisionSessionIds.map(async (id) => {
-          return Utils.readFiles(`public/reports/${id}/consumption_reports`);
-        })
-      )
-    )
-      .filter((content) => content.length !== 0)
-      .flat();
-    const transformedJsonResponse = this.transformJSONtoReport(readContent);
+    async generateConsumptionReport(provisionSessionIds, queryFilter) {
+        const readContent = (await Promise.all(
+            provisionSessionIds.map(async (id) => {
+                return Utils.readFiles(`public/reports/${id}/consumption_reports`);
+            })
+        )).filter(content => content.length !== 0).flat();
+        const transformedJsonResponse = this.transformJSONtoReport(readContent);
 
-    return await this.overviewConsumptionReport(
-      transformedJsonResponse,
-      queryFilter
-    );
-  }
+        return await this.overviewConsumptionReport(transformedJsonResponse, queryFilter);
+    }
 
-  async overviewConsumptionReport(reports, queryFilter) {
-    const {} = defaults();
+    async overviewConsumptionReport(reports, queryFilter) {
+        const { } = defaults(
+        );
 
-    return chain(reports)
-      .map((report) => {
-        return report;
-      })
-      .value();
-  }
+        return chain(reports)
+            .map((report) => {
+                return report;
+            }).value();
+    }
 
-  /**
-   * Returns an overview of all the metrics for the given provisionSessionIds
-   *
-   * @param reports
-   * @param queryFilter
-   * @returns {Promise<(any)[]>}
-   */
-  async overviewMetricsReport(reports, queryFilter) {
-    const { orderProperty, offset, limit, sortingOrder } = defaults(
-      queryFilter,
-      {
-        orderProperty: "reportTime",
-        sortingOrder: "desc",
-      }
-    );
+    /**
+     * Returns an overview of all the metrics for the given provisionSessionIds
+     *
+     * @param reports
+     * @param queryFilter
+     * @returns {Promise<(any)[]>}
+     */
+    async overviewMetricsReport(reports, queryFilter) {
+        const { orderProperty, offset, limit, sortingOrder } = defaults(
+            queryFilter,
+            {
+                orderProperty: 'reportTime',
+                sortingOrder: 'desc'
+            }
+        );
 
     return chain(reports)
       .map((report) => {
@@ -160,49 +141,46 @@ class ReportsService {
       .value();
   }
 
-  /**
-   * Filters reports based on the query parameters
-   *
-   * @param reportsList
-   * @param queryFilter
-   * @returns {*}
-   */
-  filterReports(reportsList, queryFilter) {
-    const clearQueryFilter = omitBy(queryFilter, isNil);
-    return reportsList.filter((report) => {
-      if (report.ReceptionReport) {
-        const flattenedReport = merge(
-          report.ReceptionReport,
-          report.ReceptionReport.QoeReport
-        );
-        return (
-          flattenedReport.recordingSessionId ===
-            clearQueryFilter.recordingSessionId &&
-          (flattenedReport.reportTime === clearQueryFilter.reportTime ||
-            clearQueryFilter.reportTime.includes(flattenedReport.reportTime))
-        );
-      } else if (report.consumptionReportingUnits) {
-        const filteredUnits = filter(
-          report.consumptionReportingUnits,
-          (unit) => {
-            const sameStartTime = queryFilter.startTime
-              ? unit.startTime === queryFilter.startTime
-              : true;
-            const sameDuration = queryFilter.duration
-              ? unit.duration === +queryFilter.duration
-              : true;
-            return sameStartTime && sameDuration;
-          }
-        );
+    /**
+     * Filters reports based on the query parameters
+     *
+     * @param reportsList
+     * @param queryFilter
+     * @returns {*}
+     */
+    filterReports(reportsList, queryFilter) {
+        const clearQueryFilter = omitBy(queryFilter, isNil);
+        return reportsList.filter(report => {
+            if (report.ReceptionReport) {
+                const qoeReport = report.ReceptionReport.QoeReport;
+                return (
+                    qoeReport.recordingSessionId ===
+                    clearQueryFilter.recordingSessionId &&
+                    (qoeReport.reportTime === clearQueryFilter.reportTime ||
+                        clearQueryFilter.reportTime.includes(qoeReport.reportTime))
+                );
+            } else if (report.consumptionReportingUnits) {
+                const filteredUnits = filter(
+                    report.consumptionReportingUnits,
+                    (unit) => {
+                        const sameStartTime = queryFilter.startTime
+                            ? unit.startTime === queryFilter.startTime
+                            : true;
+                        const sameDuration = queryFilter.duration
+                            ? unit.duration === +queryFilter.duration
+                            : true;
+                        return sameStartTime && sameDuration;
+                    }
+                );
 
-        const sameReportingClientId = queryFilter.reportingClientId
-          ? report.reportingClientId === queryFilter.reportingClientId
-          : true;
-        return sameReportingClientId && filteredUnits.length > 0;
-      }
-      return true;
-    });
-  }
+                const sameReportingClientId = queryFilter.reportingClientId
+                    ? report.reportingClientId === queryFilter.reportingClientId
+                    : true;
+                return sameReportingClientId && filteredUnits.length > 0;
+            }
+            return true;
+        });
+    }
 }
 
 module.exports = ReportsService;

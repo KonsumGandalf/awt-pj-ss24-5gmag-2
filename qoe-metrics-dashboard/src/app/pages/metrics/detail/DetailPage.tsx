@@ -3,11 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 
 import { Box, CircularProgress } from '@mui/material';
 
-import { EnvContext } from '../../env.context';
-import { useReportDetail } from '../../hooks/api';
+import { EnvContext } from '../../../env.context';
+import { useMetricsReportDetail } from '../../../hooks/metrics-api';
+import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
 
-import { DetailContent } from './DetailContent';
-import { DetailPageContext } from './DetailPage.context';
+import { DetailPageContent } from './DetailPageContent';
+import { DetailPageContext } from './DetailPageContext';
 
 import './DetailPage.scss';
 
@@ -16,7 +17,10 @@ function DetailPage() {
 
     const [searchParams] = useSearchParams();
 
-    const { reportDetails, error, loading } = useReportDetail(envCtx.backendUrl, searchParams);
+    const { reportDetails, error, loading } = useMetricsReportDetail(
+        envCtx.backendUrl,
+        searchParams as unknown as TMetricsDetailsRequestParams
+    );
 
     if (loading) {
         return (
@@ -40,7 +44,7 @@ function DetailPage() {
                 value={reportDetails}
                 key={reportDetails.QoeReport.RecordingSessionID + reportDetails.QoeReport.ReportTime}
             >
-                <DetailContent reportDetails={reportDetails} />
+                <DetailPageContent reportDetails={reportDetails} />
             </DetailPageContext.Provider>
         </Box>
     );

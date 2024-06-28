@@ -1,8 +1,8 @@
-import { ESortingOrder } from '../../enums/shared/sorting-order.enum';
+import { ESortingOrder } from '../../../enums/shared/sorting-order.enum';
 import { TMetricsOverviewReport } from '../responses/metrics-overview-report.type';
 
 /**
- * The interface for request parameters for the metrics report overview
+ * The interface for requests parameters for the metrics report overview
  */
 export interface IMetricsRequestParamsOverview {
     /**

@@ -1,14 +1,14 @@
-import { EMetricsType } from '../../enums/metrics/metrics-type.enum';
+import { EMetricsType } from '../../../enums/metrics/metrics-type.enum';
 
 /**
  * The response type for the backend endpoint for metrics report detail
  */
-export type TMetricsDetailsReportResponse = TMetricsDetailReport[];
+export type TMetricsDetailsReportResponse = IMetricsDetailReport[];
 
 /**
  * The interface for a single metrics report detail
  */
-export interface TMetricsDetailReport {
+export interface IMetricsDetailReport {
     ReceptionReport: IReceptionReport;
 }
 
@@ -33,10 +33,10 @@ export interface IQoeReport {
     reportPeriod: string;
     reportTime: string;
     periodID: string;
-    QoeMetric?: QoeMetric[];
+    QoeMetric?: IQoeMetric[];
 }
 
-export interface QoeMetric {
+export interface IQoeMetric {
     [EMetricsType.BUFFER_LEVEL]?: BufferLevel;
     [EMetricsType.HTTP_LIST]?: HttpList;
     [EMetricsType.MPD_INFORMATION]?: MPDInformation[];

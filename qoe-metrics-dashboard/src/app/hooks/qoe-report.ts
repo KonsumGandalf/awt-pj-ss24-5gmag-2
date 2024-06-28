@@ -1,9 +1,8 @@
 import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
 import { TMappedQoeMetric, TMappedRepSwitchList } from '../models/types/metrics/qoe-report.type';
-import { TMetricsDetailReport } from '../models/types/responses/metrics-details-report.interface';
-import { QoeMetric } from '../models/types/responses/metrics-details-report.interface';
+import { IMetricsDetailReport, IQoeMetric } from '../models/types/metrics/responses/metrics-details-report.interface';
 
-export const qoEMetricsFromReport = (report: TMetricsDetailReport): TMappedQoeMetric => {
+export const qoEMetricsFromReport = (report: IMetricsDetailReport): TMappedQoeMetric => {
     const QoeMetric = report?.ReceptionReport?.QoeReport?.QoeMetric;
 
     if (!QoeMetric) {
@@ -15,7 +14,7 @@ export const qoEMetricsFromReport = (report: TMetricsDetailReport): TMappedQoeMe
         };
     }
 
-    const findMetricValue = <T extends keyof QoeMetric>(metricName: T) => {
+    const findMetricValue = <T extends keyof IQoeMetric>(metricName: T) => {
         return QoeMetric.find((metric) => metric[metricName] !== undefined)?.[metricName];
     };
 

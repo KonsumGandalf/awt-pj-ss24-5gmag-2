@@ -14,27 +14,27 @@ import {
     GridToolbar,
 } from '@mui/x-data-grid';
 
-import { theme } from '../../../theme';
-import MetricTypeIcon from '../../components/metric-type-icon/metric-type-icon';
-import ReloadButton from '../../components/reload-button/reload-button';
-import { EnvContext } from '../../env.context';
-import { useReportList } from '../../hooks/api';
-import { EMetricsType } from '../../models/enums/metrics/metrics-type.enum';
-import { ESortingOrder } from '../../models/enums/shared/sorting-order.enum';
-import { ESseTopic } from '../../models/enums/shared/sse-topic.enum';
-import { TMetricsDetailsRequestParams } from '../../models/types/requests/metrics-details-request-params.type';
-import { IMetricsRequestParamsOverview } from '../../models/types/requests/metrics-overview-request-params.interface';
-import { TMetricsOverviewReport } from '../../models/types/responses/metrics-overview-report.type';
+import { theme } from '../../../../theme';
+import MetricTypeIcon from '../../../components/metric-type-icon/metric-type-icon';
+import ReloadButton from '../../../components/reload-button/reload-button';
+import { EnvContext } from '../../../env.context';
+import { useMetricsReportList } from '../../../hooks/metrics-api';
+import { EMetricsType } from '../../../models/enums/metrics/metrics-type.enum';
+import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
+import { ESseTopic } from '../../../models/enums/shared/sse-topic.enum';
+import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
+import { IMetricsRequestParamsOverview } from '../../../models/types/metrics/requests/metrics-overview-request-params.interface';
+import { TMetricsOverviewReport } from '../../../models/types/metrics/responses/metrics-overview-report.type';
 
-import './Overview.scss';
+import './MetricsOverviewPage.scss';
 
 const ROWS_PER_PAGE = 5;
 const MAX_ROWS_PER_PAGE = 25;
 
 /**
- * Displays an overview of the metrics types
+ * Displays an overview of the consumption reports
  */
-function Overview() {
+function MetricsOverviewPage() {
     const navigate = useNavigate();
     const envCtx = useContext(EnvContext);
 
@@ -45,17 +45,12 @@ function Overview() {
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-    const { reportList, error, loading } = useReportList(
+    const { reportList, error, loading } = useMetricsReportList(
         envCtx.backendUrl,
         {
             provisionSessionIds,
-
-            // currentPage,
-            // limit,
-            // sortingOrder,
-            // orderProperty,
         } as IMetricsRequestParamsOverview,
-        rerender
+        rerender,
     );
 
     if (loading) {
@@ -146,6 +141,7 @@ function Overview() {
 
     return (
         <div className="page-wrapper">
+            <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
             <Button
                 sx={{
                     alignSelf: 'center',
@@ -159,7 +155,6 @@ function Overview() {
             >
                 Aggregate {selectedIds.length} reports
             </Button>
-            <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
             <DataGrid
                 rows={reportList}
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}
@@ -186,10 +181,6 @@ function Overview() {
                 }}
                 autosizeOnMount
                 checkboxSelection
-                onPaginationModelChange={(params) => {
-                    // setCurrentPage(params.page);
-                    // setLimit(params.pageSize);
-                }}
                 onRowClick={(params) => {
                     const filterQueryParams = pick(params.row, ['clientID', 'recordingSessionId', 'reportTime']);
                     handleClickMetric(filterQueryParams);
@@ -223,4 +214,4 @@ function Overview() {
     );
 }
 
-export default Overview;
+export default MetricsOverviewPage;

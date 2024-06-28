@@ -1,4 +1,4 @@
-export type TConsumptionOverviewReportResponse = IConsumptionDetailReport[];
+export type TConsumptionDetailsReportResponse = IConsumptionDetailReport[];
 
 export interface IConsumptionDetailReport {
     mediaPlayerEntry: string;
@@ -13,7 +13,7 @@ export interface ConsumptionReportingUnit {
     serverEndpointAddress: ServerEndpointAddress;
     startTime: string;
     duration: number;
-    locations: never[];
+    locations: string[];
     stability: number;
 }
 
