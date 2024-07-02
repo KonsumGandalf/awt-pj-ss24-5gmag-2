@@ -1,7 +1,6 @@
 import { isNil, omitBy } from 'lodash';
-import { TMappedReportDetails, TMappedReportResponse } from '../models/types/metrics/qoe-report.type';
-import { TMetricsDetailsRequestParams } from '../models/types/metrics/requests/metrics-details-request-params.type';
 
+import { TMappedReportDetails, TMappedReportResponse } from '../models/types/metrics/qoe-report.type';
 import { IMetricsRequestParamsOverview } from '../models/types/metrics/requests/metrics-overview-request-params.interface';
 import { TMetricsDetailsReportResponse } from '../models/types/metrics/responses/metrics-details-report.interface';
 import { TMetricsOverviewReportResponse } from '../models/types/metrics/responses/metrics-overview-report.type';
@@ -19,7 +18,7 @@ import { qoEMetricsFromReport } from './qoe-report';
 export const useMetricsReportList = (
     backendUrl: string,
     requestOverviewParams: IMetricsRequestParamsOverview,
-    rerender?: string,
+    rerender?: string
 ) => {
     const cleanParams = omitBy(requestOverviewParams, isNil);
 
@@ -36,21 +35,27 @@ export const useMetricsReportList = (
     return { reportList, error, loading };
 };
 
-
 /**
  * Fetches the details of a report
  *
  * @param backendUrl - The URL of the backend
  * @param requestDetailsParams - The filter parameters for the request
  */
-export const useMetricsReportDetail = (backendUrl: string, requestDetailsParams: TMetricsDetailsRequestParams): TMappedReportResponse => {
+export const useMetricsReportDetail = (
+    backendUrl: string,
+    requestDetailsParams: URLSearchParams
+): TMappedReportResponse => {
+    const params = {
+        recordingSessionId: requestDetailsParams.get('recordingSessionId'),
+        reportTime: requestDetailsParams.getAll('reportTime'),
+    };
     const {
         response: reportDetails,
         error,
-        loading
+        loading,
     } = useAxiosGet<TMetricsDetailsReportResponse>({
         url: `${backendUrl}/reporting-ui/metrics/details`,
-        params: requestDetailsParams
+        params: params,
     });
     const aggregatedMetricReports = MetricReportUtils.aggregateMetricReports(reportDetails);
 
@@ -74,8 +79,8 @@ export const useMetricsReportDetail = (backendUrl: string, requestDetailsParams:
                 ReportTime: receptionReport.QoeReport.reportTime,
                 PeriodID: receptionReport.QoeReport.periodID,
 
-                ...QoeMetrics
-            }
+                ...QoeMetrics,
+            },
         };
 
         return { reportDetails: mappedReportList, error, loading };
