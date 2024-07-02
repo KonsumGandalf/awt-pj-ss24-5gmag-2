@@ -4,19 +4,30 @@ export const graphColors = ['#0F4776', '#F46036', '#2BA84A', '#A72608'];
 
 export const theme = createTheme({
     typography: {
-        fontFamily: 'Roboto'
+        fontFamily: 'Roboto',
     },
     palette: {
         primary: {
             main: '#0F4776',
-            light: '#A5D0F3'
+            light: '#A5D0F3',
         },
         background: {
             paper: '#fff',
-            default: '#faf9f6'
+            default: '#faf9f6',
         },
         text: {
-            primary: '#0b1215'
-        }
-    }
+            primary: '#0b1215',
+        },
+    },
+    components: {
+        MuiTableRow: {
+            styleOverrides: {
+                root: {
+                    '&:last-child td': {
+                        borderBottom: 0,
+                    },
+                },
+            },
+        },
+    },
 });

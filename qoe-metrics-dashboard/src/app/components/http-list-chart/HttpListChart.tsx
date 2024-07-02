@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
     CartesianGrid,
     Label,
@@ -10,12 +10,12 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { TMappedHttpList } from 'src/app/hooks/qoe-report';
 
 import { Box, Typography } from '@mui/material';
 
+import { TMappedHttpList } from '../../../app/models/types/metrics/qoe-report.type';
 import { graphColors } from '../../../theme';
-import { TypographyTick } from '../utils/chart';
+import { TypographyTickX, TypographyTickY } from '../utils/chart';
 
 type DataPoint = {
     duration: number;
@@ -47,13 +47,20 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
     return (
         <Box
             padding={'2rem'}
-            bgcolor={'background.default'}
+            bgcolor={'background.paper'}
             borderRadius={'2rem'}
-            alignItems={'center'}
+            alignItems={'flex-start'}
             display={'flex'}
             flexDirection={'column'}
+            className="box-shadow"
         >
-            <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
+            <Typography
+                component={'h2'}
+                variant="h5"
+                paddingBottom={'1rem'}
+                fontFamily={'Roboto Mono'}
+                color={'primary'}
+            >
                 Http List
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
@@ -66,7 +73,7 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         type="number"
                         unit={'ms'}
                         domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        tick={(args) => <TypographyTickX {...args} unit></TypographyTickX>}
                     >
                         <Label value="Duration in ms" position="bottom" style={{ textAnchor: 'middle' }}></Label>
                     </XAxis>
@@ -76,7 +83,7 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         type="number"
                         unit={'bytes'}
                         domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        tick={(args) => <TypographyTickY {...args}></TypographyTickY>}
                     >
                         <Label
                             value="Transferred Bytes"

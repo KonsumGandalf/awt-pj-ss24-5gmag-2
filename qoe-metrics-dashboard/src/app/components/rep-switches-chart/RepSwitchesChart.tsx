@@ -7,12 +7,12 @@ import { Box, Typography } from '@mui/material';
 
 import { graphColors } from '../../../theme';
 import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics/qoe-report.type';
-import { TypographyTick, XAxisTick } from '../utils/chart';
+import { TypographyTickY, XAxisTick } from '../utils/chart';
 
 function RepSwitchesChart({
-                              repSwitchList,
-                              mpdInfo,
-                          }: {
+    repSwitchList,
+    mpdInfo,
+}: {
     repSwitchList: TMappedRepSwitchList[];
     mpdInfo: TMappedMpdInfo[];
 }) {
@@ -65,13 +65,20 @@ function RepSwitchesChart({
     return (
         <Box
             padding={'2rem'}
-            bgcolor={'background.default'}
+            bgcolor={'background.paper'}
             borderRadius={'2rem'}
-            alignItems={'center'}
+            alignItems={'flex-start'}
             display={'flex'}
             flexDirection={'column'}
+            className="box-shadow"
         >
-            <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
+            <Typography
+                component={'h2'}
+                variant="h5"
+                paddingBottom={'1rem'}
+                fontFamily={'Roboto Mono'}
+                color={'primary'}
+            >
                 Representation Switches
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
@@ -91,7 +98,7 @@ function RepSwitchesChart({
                         <Label value="Timestamp" position="bottom" style={{ textAnchor: 'middle' }} />
                     </XAxis>
 
-                    <YAxis tick={(args) => <TypographyTick {...args}></TypographyTick>}>
+                    <YAxis tick={(args) => <TypographyTickY {...args}></TypographyTickY>}>
                         <Label
                             value="Bandwidth in bit/s"
                             position="insideLeft"

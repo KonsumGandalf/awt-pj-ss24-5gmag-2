@@ -11,7 +11,7 @@ export function DetailPageContent({ reportDetails }: { reportDetails: TMappedRep
     const { mpdInfo, bufferLevel, httpList, repSwitchList } = reportDetails.QoeReport;
 
     return (
-        <Box display={'flex'} flexDirection={'column'} gap={'2rem'}>
+        <Box display={'flex'} flexDirection={'column'} gap={'2rem'} width={'90%'} maxWidth={900}>
             <BasicInformationTables reportDetails={reportDetails}></BasicInformationTables>
             <MPDInformationTable mpdInfo={mpdInfo}></MPDInformationTable>
             <BufferLevelChart bufferLevel={bufferLevel}></BufferLevelChart>
