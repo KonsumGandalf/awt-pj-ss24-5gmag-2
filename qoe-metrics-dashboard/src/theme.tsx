@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material';
 
-export const graphColors = ['#0F4776', '#F46036', '#2BA84A', '#A72608'];
+export const graphColors = ['#0F4776', '#FFC145', '#B8B8D1', '#ff6b6c', '#C4F1BE'];
 
 export const theme = createTheme({
     typography: {

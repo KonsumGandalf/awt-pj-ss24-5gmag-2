@@ -39,7 +39,7 @@ function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }
                     height={1000}
                     margin={{ top: 0, bottom: 20, left: 20, right: 20 }}
                 >
-                    <CartesianGrid vertical={false} />
+                    <CartesianGrid vertical={false} syncWithTicks={true} />
                     <XAxis
                         dataKey="timeStamp"
                         tick={(args) => <XAxisTick {...args}></XAxisTick>}
@@ -50,6 +50,8 @@ function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }
                         type="number"
                         domain={['auto', 'auto']}
                         scale={'time'}
+                        tickLine={false}
+                        stroke="none"
                     >
                         <Label
                             value="Timestamp"
@@ -58,7 +60,11 @@ function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }
                         />
                     </XAxis>
 
-                    <YAxis tick={(args) => <TypographyTickY {...args}></TypographyTickY>} padding={{ top: 40 }}>
+                    <YAxis
+                        tick={(args) => <TypographyTickY {...args}></TypographyTickY>}
+                        padding={{ top: 10, bottom: 10 }}
+                        stroke="none"
+                    >
                         <Label
                             value="Buffer Level in ms"
                             position="insideLeft"
@@ -86,7 +92,7 @@ function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }
                     <Tooltip
                         position={{ y: 0 }}
                         labelFormatter={(name: string) => 'Timestamp: ' + dayjs(name).format('YYYY-MM-DD HH:mm:ss:SSS')}
-                        formatter={(value: string, name, props) => [value, 'Duration in ms']}
+                        formatter={(value: string, name, props) => [value + 'ms', 'Buffer Level']}
                     />
                 </LineChart>
             </ResponsiveContainer>
