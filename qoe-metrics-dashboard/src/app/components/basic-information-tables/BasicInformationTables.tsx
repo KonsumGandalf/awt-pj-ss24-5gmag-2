@@ -28,7 +28,7 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                 >
                     Reception Report
                 </Typography>
-                <Box component={'div'} width={1} overflow={'scroll'}>
+                <Box component={'div'} width={1} sx={{ overflowX: 'auto' }}>
                     <Table>
                         <TableBody>
                             <TableRow>
@@ -63,7 +63,7 @@ function BasicInformationTables({ reportDetails }: { reportDetails: TMappedRepor
                 >
                     QoE Report
                 </Typography>
-                <Box component={'div'} width={1} overflow={'scroll'}>
+                <Box component={'div'} width={1} sx={{ overflowX: 'auto' }}>
                     <Table>
                         <TableBody>
                             <TableRow>

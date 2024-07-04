@@ -27,7 +27,7 @@ function MPDInformationTable({ mpdInfo }: { mpdInfo: TMappedMpdInfo[] }) {
             >
                 MPD Information
             </Typography>
-            <Box component={'div'} width={1} overflow={'scroll'}>
+            <Box component={'div'} width={1} sx={{ overflowX: 'auto' }}>
                 <Table>
                     <TableHead>
                         <TableRow>
