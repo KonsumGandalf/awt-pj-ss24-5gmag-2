@@ -90,8 +90,8 @@ function ConsumptionDetailPage() {
                     className="box-shadow"
                 >
                     <Typography
-                        component={'h3'}
-                        variant="h6"
+                        component={'h2'}
+                        variant="h5"
                         paddingBottom={'1rem'}
                         fontFamily={'Roboto Mono'}
                         color={'primary'}
