@@ -35,7 +35,18 @@ function DetailPage() {
     }
 
     return (
-        <Box padding={'2rem'} component={'div'} overflow={'scroll'}>
+        <Box
+            padding={'2rem'}
+            component={'div'}
+            bgcolor={'background.default'}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            sx={{
+                overflowY: 'scroll',
+                overflowX: 'hidden',
+            }}
+        >
             <DetailPageContext.Provider
                 value={reportDetails}
                 key={reportDetails.QoeReport.RecordingSessionID + reportDetails.QoeReport.ReportTime}
