@@ -76,6 +76,10 @@ function ConsumptionDetailPage() {
                                         <a href={reportDetails.mediaPlayerEntry}>{reportDetails.mediaPlayerEntry}</a>
                                     </TableCell>
                                 </TableRow>
+                                <TableRow>
+                                    <TableCell className="mono bold">Stability</TableCell>
+                                    <TableCell className="mono">{reportDetails.stability}</TableCell>
+                                </TableRow>
                             </TableBody>
                         </Table>
                     </Box>
