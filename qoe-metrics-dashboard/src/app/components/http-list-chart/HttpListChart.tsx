@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import { every, maxBy } from 'lodash';
 import {
     CartesianGrid,
+    DefaultLegendContentProps,
     Label,
     Legend,
     ResponsiveContainer,
@@ -10,12 +12,12 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { TMappedHttpList } from 'src/app/hooks/qoe-report';
 
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
+import { TMappedHttpList } from '../../../app/models/types/metrics/qoe-report.type';
 import { graphColors } from '../../../theme';
-import { TypographyTick } from '../utils/chart';
+import { TypographyTickX, TypographyTickY } from '../utils/chart';
 
 type DataPoint = {
     duration: number;
@@ -25,6 +27,8 @@ type DataPoint = {
 type TypeDataPoint = Record<string, DataPoint[]>;
 
 function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
+    const theme = useTheme();
+
     const [scatterVisibility, setScatterisibility] = useState<Record<string, boolean>>(
         httpList.reduce((acc, entry) => {
             acc[entry.type] = true;
@@ -44,21 +48,70 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
         return acc;
     }, {} as TypeDataPoint);
 
+    const renderLegend = (props: DefaultLegendContentProps) => {
+        const { payload } = props;
+
+        return (
+            <Box gap={'1.5rem'} display={'flex'} width={1} justifyContent={'center'}>
+                {payload?.map((entry, index) => {
+                    const color = entry.color;
+                    return (
+                        <Box
+                            key={`item-${index}`}
+                            display={'flex'}
+                            alignItems={'center'}
+                            gap={'0.5rem'}
+                            onClick={() => {
+                                const temp = { ...scatterVisibility };
+                                temp[entry.value] = !scatterVisibility[entry.value];
+                                if (every(Object.values(temp).map((t) => !t))) {
+                                    return;
+                                }
+                                setScatterisibility({
+                                    ...scatterVisibility,
+                                    [entry.value]: !scatterVisibility[entry.value],
+                                });
+                            }}
+                        >
+                            <Box
+                                height={'1rem'}
+                                width={'1rem'}
+                                borderRadius={'1rem'}
+                                bgcolor={scatterVisibility[entry.value] ? color : 'transparent'}
+                                boxSizing={'border-box'}
+                                border={'2px solid'}
+                                borderColor={color}
+                            ></Box>
+                            <Typography color={color}>{entry.value}</Typography>
+                        </Box>
+                    );
+                })}
+            </Box>
+        );
+    };
+
     return (
         <Box
             padding={'2rem'}
-            bgcolor={'background.default'}
+            bgcolor={'background.paper'}
             borderRadius={'2rem'}
-            alignItems={'center'}
+            alignItems={'flex-start'}
             display={'flex'}
             flexDirection={'column'}
+            className="box-shadow"
         >
-            <Typography component={'h2'} variant="h5" paddingBottom={'1rem'}>
+            <Typography
+                component={'h2'}
+                variant="h5"
+                paddingBottom={'1rem'}
+                fontFamily={'Roboto Mono'}
+                color={'primary'}
+            >
                 Http List
             </Typography>
             <ResponsiveContainer minHeight={500} minWidth={200}>
                 <ScatterChart width={500} height={1000} margin={{ top: 0, bottom: 20, left: 20, right: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid syncWithTicks={true} vertical={false} />
 
                     <XAxis
                         dataKey="duration"
@@ -66,23 +119,41 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         type="number"
                         unit={'ms'}
                         domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        stroke="none"
+                        padding={{ left: 10, right: 10 }}
+                        tick={(args) => <TypographyTickX {...args} unit></TypographyTickX>}
                     >
-                        <Label value="Duration in ms" position="bottom" style={{ textAnchor: 'middle' }}></Label>
+                        <Label
+                            value="Duration in ms"
+                            position="bottom"
+                            style={{ textAnchor: 'middle' }}
+                            fill={theme.palette.primary.main}
+                        ></Label>
                     </XAxis>
                     <YAxis
                         dataKey="transferedBytes"
                         name="Transfered Bytes"
                         type="number"
-                        unit={'bytes'}
-                        domain={['auto', 'auto']}
-                        tick={(args) => <TypographyTick {...args}></TypographyTick>}
+                        unit={'B'}
+                        domain={[
+                            'auto',
+                            () => {
+                                return (
+                                    maxBy(httpList, (o) => (scatterVisibility[o.type] ? o.transferedBytes : 0))
+                                        ?.transferedBytes ?? 0
+                                );
+                            },
+                        ]}
+                        stroke="none"
+                        padding={{ top: 10, bottom: 10 }}
+                        tick={(args) => <TypographyTickY {...args}></TypographyTickY>}
                     >
                         <Label
                             value="Transferred Bytes"
                             position="insideLeft"
                             angle={-90}
                             offset={-10}
+                            fill={theme.palette.primary.main}
                             style={{ textAnchor: 'middle' }}
                         />
                     </YAxis>
@@ -92,25 +163,20 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
                         }}
                     />
 
-                    <Legend
-                        verticalAlign="top"
-                        onClick={(e: { value: string }) => {
-                            setScatterisibility({
-                                ...scatterVisibility,
-                                [e.value]: !scatterVisibility[e.value],
-                            });
-                        }}
-                        height={40}
-                    />
-                    {Object.entries(dataByTypeRef).map(([type, data], index) => (
-                        <Scatter
-                            key={type}
-                            name={type}
-                            data={data}
-                            fill={graphColors[index % graphColors.length]}
-                            hide={!scatterVisibility[type]}
-                        />
-                    ))}
+                    <Legend verticalAlign="top" content={renderLegend} height={40} />
+                    {Object.entries(dataByTypeRef).map(([type, data], index) => {
+                        console.log('reload');
+                        return (
+                            <Scatter
+                                key={type}
+                                name={type}
+                                data={data}
+                                isAnimationActive={true}
+                                fill={graphColors[index % graphColors.length]}
+                                hide={!scatterVisibility[type]}
+                            />
+                        );
+                    })}
                 </ScatterChart>
             </ResponsiveContainer>
         </Box>
