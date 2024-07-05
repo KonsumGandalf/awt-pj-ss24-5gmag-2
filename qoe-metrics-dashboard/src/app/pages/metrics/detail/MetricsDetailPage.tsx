@@ -6,12 +6,12 @@ import { Box, CircularProgress } from '@mui/material';
 import { EnvContext } from '../../../env.context';
 import { useMetricsReportDetail } from '../../../hooks/metrics-api';
 
-import { DetailPageContent } from './DetailPageContent';
-import { DetailPageContext } from './DetailPageContext';
+import { MetricsDetailPageContent } from './MetricsDetailPageContent';
+import { MetricsDetailPageContext } from './MetricsDetailPageContext';
 
-import './DetailPage.scss';
+import './MetricsDetailPage.scss';
 
-function DetailPage() {
+function MetricsDetailPage() {
     const envCtx = useContext(EnvContext);
 
     const [searchParams] = useSearchParams();
@@ -47,14 +47,14 @@ function DetailPage() {
                 overflowX: 'hidden',
             }}
         >
-            <DetailPageContext.Provider
+            <MetricsDetailPageContext.Provider
                 value={reportDetails}
                 key={reportDetails.QoeReport.RecordingSessionID + reportDetails.QoeReport.ReportTime}
             >
-                <DetailPageContent reportDetails={reportDetails} />
-            </DetailPageContext.Provider>
+                <MetricsDetailPageContent reportDetails={reportDetails} />
+            </MetricsDetailPageContext.Provider>
         </Box>
     );
 }
 
-export default DetailPage;
+export default MetricsDetailPage;

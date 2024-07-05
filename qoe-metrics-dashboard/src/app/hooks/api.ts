@@ -46,16 +46,16 @@ export const useAxiosGet = <T>({ url, params, rerender }: { url: string; params:
  */
 export const useSseReloadList = (backendUrl: string, topic: string) => {
     const [reloadCount, setReloadCount] = useState(0);
+    const handleReload = (e: MessageEvent) => {
+        console.log('SSE event received', e);
+        setReloadCount((prevCount) => prevCount + 1);
+    };
 
     useEffect(() => {
         const sse = new EventSource(`${backendUrl}/reporting-ui/sse/reload`);
 
-        const handleReload = (e: MessageEvent) => {
-            setReloadCount((prevCount) => prevCount + 1);
-        };
-
         sse.onopen = () => {
-            console.log('SSE connection opened');
+            console.log('SSE connection opened', `${backendUrl}/reporting-ui/sse/reload`);
         };
 
         sse.onerror = function (e) {
@@ -72,7 +72,7 @@ export const useSseReloadList = (backendUrl: string, topic: string) => {
             sse.removeEventListener(topic, handleReload);
             sse.close();
         };
-    }, [backendUrl]);
+    }, []);
 
     const resetReloadCount = useCallback(() => {
         setReloadCount(0);

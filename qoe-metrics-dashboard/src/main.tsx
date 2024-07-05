@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material';
 
 import App from './app/app';
 import ConsumptionOverviewPage from './app/pages/consumption/overview/ConsumptionOverviewPage';
-import DetailPage from './app/pages/metrics/detail/DetailPage';
+import MetricsDetailPage from './app/pages/metrics/detail/MetricsDetailPage';
 import MetricsOverviewPage from './app/pages/metrics/overview/MetricsOverviewPage';
 import { theme } from './theme';
 
@@ -14,6 +14,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import ConsumptionDetailPage from './app/pages/consumption/detail/consumptionDetailPage';
 
 const router = createBrowserRouter([
     {
@@ -31,15 +32,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'metrics/details',
-                element: <DetailPage></DetailPage>,
+                element: <MetricsDetailPage></MetricsDetailPage>,
             },
             {
                 path: 'consumption',
                 element: <ConsumptionOverviewPage></ConsumptionOverviewPage>,
             },
             {
-                path: 'consumption/:consumptionId',
-                element: <DetailPage></DetailPage>,
+                path: 'consumption/details',
+                element: <ConsumptionDetailPage></ConsumptionDetailPage>,
             },
         ],
     },
@@ -47,9 +48,7 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-    <StrictMode>
-        <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
-        </ThemeProvider>
-    </StrictMode>
+    <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+    </ThemeProvider>
 );

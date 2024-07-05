@@ -7,7 +7,7 @@ import MPDInformationTable from '../../../components/mpd-information-table/MPDIn
 import RepSwitchesChart from '../../../components/rep-switches-chart/RepSwitchesChart';
 import { TMappedReportDetails } from '../../../models/types/metrics/qoe-report.type';
 
-export function DetailPageContent({ reportDetails }: { reportDetails: TMappedReportDetails }) {
+export function MetricsDetailPageContent({ reportDetails }: { reportDetails: TMappedReportDetails }) {
     const { mpdInfo, bufferLevel, httpList, repSwitchList } = reportDetails.QoeReport;
 
     return (

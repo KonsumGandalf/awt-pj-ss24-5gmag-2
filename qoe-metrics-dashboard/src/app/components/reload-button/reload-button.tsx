@@ -13,7 +13,7 @@ import { useSseReloadList } from '../../hooks/api';
  * @param action
  * @param topic
  */
-export function ReloadButton({ action, topic }: { action: () => void, topic: string }) {
+export function ReloadButton({ action, topic }: { action: () => void; topic: string }) {
     const envCtx = useContext(EnvContext);
 
     const { reloadCount, resetReloadCount } = useSseReloadList(envCtx.backendUrl, topic);

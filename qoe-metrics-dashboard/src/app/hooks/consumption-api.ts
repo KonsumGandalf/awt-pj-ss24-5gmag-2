@@ -5,6 +5,7 @@ import { TConsumptionDetailsReportResponse } from '../models/types/consumption/r
 import { TConsumptionOverviewReportResponse } from '../models/types/consumption/responses/consumption-overview-report.type';
 
 import { useAxiosGet } from './api';
+import { duration } from '@mui/material';
 
 /**
  * Fetches the list of consumption reports
@@ -15,7 +16,7 @@ import { useAxiosGet } from './api';
 export const useConsumptionReportList = (
     backendUrl: string,
     requestOverviewParams: IConsumptionOverviewRequestParams,
-    rerender?: string,
+    rerender?: string
 ) => {
     const cleanParams = omitBy(requestOverviewParams, isNil);
 
@@ -38,15 +39,18 @@ export const useConsumptionReportList = (
  * @param backendUrl - The URL of the backend
  * @param requestDetailsParams - The filter parameters for the requests
  */
-export const useConsumptionReportDetail = (backendUrl: string, requestDetailsParams: TConsumptionDetailsReportResponse) => {
-    const {
-        response: reportDetails,
-        error,
-        loading,
-    } = useAxiosGet<TConsumptionDetailsReportResponse>({
+export const useConsumptionReportDetail = (backendUrl: string, requestDetailsParams: URLSearchParams) => {
+    const params = {
+        startTime: requestDetailsParams.get('startTime'),
+        duration: requestDetailsParams.get('duration'),
+    };
+
+    const { response, error, loading } = useAxiosGet<TConsumptionDetailsReportResponse>({
         url: `${backendUrl}/reporting-ui/consumption/details`,
-        params: requestDetailsParams,
+        params,
     });
 
-    return { reportDetails, error, loading };
+    const reportDetails = response && response.length > 0 ? response[0] : undefined;
+
+    return { reportDetails: reportDetails, error, loading };
 };
