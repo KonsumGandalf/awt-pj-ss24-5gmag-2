@@ -66,18 +66,18 @@ function ConsumptionDetailPage() {
                         <Table>
                             <TableBody>
                                 <TableRow>
-                                    <TableCell className="mono bold">Client ID</TableCell>
+                                    <TableCell className="mono bold">clientID</TableCell>
                                     <TableCell className="mono">{reportDetails.reportingClientId}</TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="mono bold">content URI</TableCell>
-                                    <TableCell className="mono">
+                                    <TableCell className="mono bold">contentURI</TableCell>
+                                    <TableCell>
                                         <a href={reportDetails.mediaPlayerEntry}>{reportDetails.mediaPlayerEntry}</a>
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="mono bold">Stability</TableCell>
-                                    <TableCell className="mono">{reportDetails.stability}</TableCell>
+                                    <TableCell className="mono bold">stability</TableCell>
+                                    <TableCell>{reportDetails.stability}</TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -105,11 +105,11 @@ function ConsumptionDetailPage() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell className="mono bold">Media Consumed</TableCell>
-                                    <TableCell className="mono bold">Client Endpoint</TableCell>
-                                    <TableCell className="mono bold">Server Endpoint</TableCell>
-                                    <TableCell className="mono bold">Start Time</TableCell>
-                                    <TableCell className="mono bold">Duration</TableCell>
+                                    <TableCell className="bold">mediaConsumed</TableCell>
+                                    <TableCell className="bold">clientEndpoint</TableCell>
+                                    <TableCell className="bold">serverEndpoint</TableCell>
+                                    <TableCell className="bold">startTime</TableCell>
+                                    <TableCell className="bold">duration</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
