@@ -4,7 +4,14 @@ import { defaults, isNil, omitBy, pick, range } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, CircularProgress, TableCell, TableRow } from '@mui/material';
-import { DataGrid, DEFAULT_GRID_AUTOSIZE_OPTIONS, GridColDef, GridRenderCellParams, GridRowParams, GridToolbar } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    DEFAULT_GRID_AUTOSIZE_OPTIONS,
+    GridColDef,
+    GridRenderCellParams,
+    GridRowParams,
+    GridToolbar,
+} from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
 import ReloadButton from '../../../components/reload-button/reload-button';
@@ -13,9 +20,7 @@ import { useConsumptionReportList } from '../../../hooks/consumption-api';
 import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
 import { ESseTopic } from '../../../models/enums/shared/sse-topic.enum';
 import { TConsumptionDetailsRequestParams } from '../../../models/types/consumption/requests/consumption-details-request-params.interface';
-import {
-    IConsumptionOverviewRequestParams,
-} from '../../../models/types/consumption/requests/consumption-overview-request-params.interface';
+import { IConsumptionOverviewRequestParams } from '../../../models/types/consumption/requests/consumption-overview-request-params.interface';
 import {
     ConsumptionReportingUnit,
     IConsumptionDetailReport,
@@ -43,7 +48,7 @@ function ConsumptionOverviewPage() {
         {
             provisionSessionIds,
         } as IConsumptionOverviewRequestParams,
-        rerender,
+        rerender
     );
 
     if (loading) {
@@ -70,7 +75,9 @@ function ConsumptionOverviewPage() {
         return <div>No Records found</div>;
     }
 
-    function handleClickMetric(consumptionReport: Pick<IConsumptionDetailReport, 'reportingClientId' | 'consumptionReportingUnits'>): void {
+    function handleClickMetric(
+        consumptionReport: Pick<IConsumptionDetailReport, 'reportingClientId' | 'consumptionReportingUnits'>
+    ): void {
         let queryParam: TConsumptionDetailsRequestParams = {
             reportingClientId: consumptionReport.reportingClientId,
         };
@@ -82,22 +89,28 @@ function ConsumptionOverviewPage() {
         }
         const filteredQueryParam = omitBy(queryParam, isNil);
         const params = new URLSearchParams(filteredQueryParam);
-        navigate('/metrics/details?' + params.toString());
+        navigate('/consumption/details?' + params.toString());
     }
 
-    function consumptionReportingUnitsCellRenderer(params: GridRenderCellParams, cellName: keyof ConsumptionReportingUnit) {
+    function consumptionReportingUnitsCellRenderer(
+        params: GridRenderCellParams,
+        cellName: keyof ConsumptionReportingUnit
+    ) {
         const consumptionReports = params.value as ConsumptionReportingUnit[];
         return (
             <div>
                 {consumptionReports.map((metricType: ConsumptionReportingUnit, index: number) => (
-                    <><TableCell
-                        key={index}
-                        sx={{
-                            borderBottom: index === consumptionReports.length - 1 ? 'none' : 'default',
-                        }}
-                    >
-                        {`${metricType[cellName]}`}
-                    </TableCell><br /></>
+                    <>
+                        <TableCell
+                            key={index}
+                            sx={{
+                                borderBottom: index === consumptionReports.length - 1 ? 'none' : 'default',
+                            }}
+                        >
+                            {`${metricType[cellName]}`}
+                        </TableCell>
+                        <br />
+                    </>
                 ))}
             </div>
         );
@@ -129,7 +142,7 @@ function ConsumptionOverviewPage() {
                 );
             },
             sortable: false,
-        }
+        },
     ];
 
     return (
@@ -146,8 +159,7 @@ function ConsumptionOverviewPage() {
                         sortModel: [{ field: 'reportingClientId', sort: ESortingOrder.ASC }],
                     },
                     columns: {
-                        columnVisibilityModel: {
-                        },
+                        columnVisibilityModel: {},
                     },
                 }}
                 pageSizeOptions={range(ROWS_PER_PAGE, MAX_ROWS_PER_PAGE + 1, ROWS_PER_PAGE)}
@@ -172,7 +184,7 @@ function ConsumptionOverviewPage() {
                 sx={{
                     overflowX: 'scroll',
                     '& .MuiDataGrid-row:hover': {
-                        backgroundColor: theme.palette.primary.light
+                        backgroundColor: theme.palette.primary.light,
                     },
                     '& .MuiDataGrid-toolbarContainer': {
                         button: {
