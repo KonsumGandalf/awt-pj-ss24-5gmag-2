@@ -5,7 +5,6 @@ import { TConsumptionDetailsReportResponse } from '../models/types/consumption/r
 import { TConsumptionOverviewReportResponse } from '../models/types/consumption/responses/consumption-overview-report.type';
 
 import { useAxiosGet } from './api';
-import { duration } from '@mui/material';
 
 /**
  * Fetches the list of consumption reports

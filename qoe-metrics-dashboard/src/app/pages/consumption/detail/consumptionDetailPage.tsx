@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EnvContext } from '../../../env.context';
 import { useConsumptionReportDetail } from '../../../hooks/consumption-api';
-import React from 'react';
 
 import './ConsumptionDetailPage.scss';
 
