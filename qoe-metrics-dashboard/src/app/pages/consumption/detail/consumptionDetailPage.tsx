@@ -105,27 +105,31 @@ function ConsumptionDetailPage() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell className="bold">mediaConsumed</TableCell>
-                                    <TableCell className="bold">clientEndpoint</TableCell>
-                                    <TableCell className="bold">serverEndpoint</TableCell>
-                                    <TableCell className="bold">startTime</TableCell>
-                                    <TableCell className="bold">duration</TableCell>
+                                    <TableCell className="mono bold">mediaConsumed</TableCell>
+                                    <TableCell className="mono bold">clientEndpoint</TableCell>
+                                    <TableCell className="mono bold">serverEndpoint</TableCell>
+                                    <TableCell className="mono bold">startTime</TableCell>
+                                    <TableCell className="mono bold">duration</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {reportDetails.consumptionReportingUnits.map((unit, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="mono">{unit.mediaConsumed}</TableCell>
-                                        <TableCell className="mono">
+                                        <TableCell>{unit.mediaConsumed}</TableCell>
+                                        <TableCell>
                                             {unit.clientEndpointAddress.ipv4Addr}:
                                             {unit.clientEndpointAddress.portNumber}
                                         </TableCell>
-                                        <TableCell className="mono">
-                                            {unit.serverEndpointAddress.domainName}:
-                                            {unit.serverEndpointAddress.portNumber}
+                                        <TableCell>
+                                            <a
+                                                href={`https://${unit.serverEndpointAddress.domainName}:${unit.serverEndpointAddress.portNumber}`}
+                                            >
+                                                {unit.serverEndpointAddress.domainName}:
+                                                {unit.serverEndpointAddress.portNumber}
+                                            </a>
                                         </TableCell>
-                                        <TableCell className="mono">{unit.startTime}</TableCell>
-                                        <TableCell className="mono">{unit.duration}</TableCell>
+                                        <TableCell>{unit.startTime}</TableCell>
+                                        <TableCell>{unit.duration}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
