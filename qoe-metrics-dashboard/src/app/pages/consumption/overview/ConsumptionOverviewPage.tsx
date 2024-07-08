@@ -3,7 +3,7 @@ import { isAxiosError } from 'axios';
 import { defaults, isNil, omitBy, pick, range } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 
-import { Alert, CircularProgress, TableCell, TableRow } from '@mui/material';
+import { Alert, Button, CircularProgress, TableCell, TableRow } from '@mui/material';
 import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
@@ -14,6 +14,7 @@ import {
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
+import ButtonFooter from '../../../components/button-footer/button-footer';
 import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
 import { useConsumptionReportList } from '../../../hooks/consumption-api';
@@ -127,13 +128,17 @@ function ConsumptionOverviewPage() {
 
     return (
         <div className="page-wrapper">
-            <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION} />
             <DataGrid
                 rows={reportList}
                 columns={columns}
+                slotProps={{
+                    toolbar: {
+                        printOptions: { disableToolbarButton: true },
+                        csvOptions: { disableToolbarButton: true },
+                    }}}
                 initialState={{
                     pagination: {
-                        paginationModel: { pageSize: ROWS_PER_PAGE },
+                        paginationModel: { pageSize: 10 },
                     },
                     sorting: {
                         sortModel: [{ field: 'reportingClientId', sort: ESortingOrder.ASC }],
@@ -166,6 +171,7 @@ function ConsumptionOverviewPage() {
                         backgroundColor: theme.palette.primary.light,
                     },
                     '& .MuiDataGrid-toolbarContainer': {
+                        background: 'var(--DataGrid-containerBackground)',
                         button: {
                             padding: '0.75rem',
                             margin: '0.5rem',
@@ -178,7 +184,14 @@ function ConsumptionOverviewPage() {
                     },
                 }}
                 loading={loading}
-                slots={{ toolbar: GridToolbar }}
+                slots={{
+                    toolbar: GridToolbar,
+                    footer: () => (
+                        <ButtonFooter>
+                            <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION} />
+                        </ButtonFooter>
+                    )
+                }}
                 getRowHeight={() => 'auto'}
             />
         </div>

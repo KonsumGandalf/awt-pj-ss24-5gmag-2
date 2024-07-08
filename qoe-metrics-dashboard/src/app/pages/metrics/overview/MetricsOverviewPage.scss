@@ -2,10 +2,22 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: scroll;
+    width: 85%;
+    overflow: hidden;
     padding: 2rem;
 
     .reloadButton {
         align-self: center;
+    }
+
+    .MuiDataGrid-root {
+        [aria-label="Export"] {
+            display: none;
+        }
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
     }
 }

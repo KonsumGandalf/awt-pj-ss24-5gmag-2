@@ -9,15 +9,15 @@
     margin-inline: 0.5rem;
     border-radius: 0.5rem;
 
-    @media (max-width: map-get($grid-breakpoints, sm)) {
-        font-size: 1rem;
-        padding: 0.25rem;
-        margin-inline: 0.25rem;
-    }
-
     @media (max-width: map-get($grid-breakpoints, md)) {
         font-size: 1.25rem;
         padding: 0.35rem;
         margin-inline: 0.35rem;
+    }
+
+    @media (max-width: map-get($grid-breakpoints, sm)) {
+        font-size: 1rem;
+        padding: 0.25rem;
+        margin-inline: 0.25rem;
     }
 }
