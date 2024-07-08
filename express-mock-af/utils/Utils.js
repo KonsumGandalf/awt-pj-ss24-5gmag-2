@@ -73,20 +73,21 @@ class Utils {
      * @param rangeString
      * @returns {*|*[]}
      */
-    static regexRangeToArray(rangeString) {
-        if (rangeString.includes(',')) {
-            return rangeString.split(',');
-        } else if (rangeString.includes('-')) {
-            const [start, end] = rangeString.split('-');
+    static regexRangeToArray(rangeString)  {
+            const match = rangeString.match(/(\d+)-(\d+)/);
+            if (!match) return [];
+
+            const start = parseInt(match[1], 10);
+            const end = parseInt(match[2], 10);
+
             const result = [];
             for (let i = start; i <= end; i++) {
-                result.push(i);
+                result.push(i.toString());
             }
             return result;
-        } else {
-            return [rangeString];
-        }
+
     }
+
 
     static triggerIrregularInterval(topic, content, minDelay, maxDelay) {
         const delay = faker.number.int({ min: minDelay, max: maxDelay });
