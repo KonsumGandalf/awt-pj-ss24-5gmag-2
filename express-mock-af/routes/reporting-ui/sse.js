@@ -3,6 +3,11 @@ const Utils = require('../../utils/Utils');
 const router = express.Router();
 
 /**
+ * Flag to check if intervals are set
+ */
+let intervalsSet = false;
+
+/**
  * This endpoint functions as an event source that sends a message every time a new file is written.
  * This is base on {@link https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events SSE } (Server-Sent Events)
  */
@@ -29,15 +34,12 @@ router.get('/reload', (req, res) => {
         subscription.unsubscribe();
     });
 
-    // This is a workaround to trigger the event every 10 seconds
-    setInterval(() => {
-        Utils.fileWritten$.next({ topic: 'consumption', content: 'test' });
-    }, 10000);
+    if (intervalsSet === false) {
+        Utils.triggerIrregularInterval('consumption', 'test', 5000, 15000);
+        Utils.triggerIrregularInterval('metrics', 'test2', 15000, 25000);
 
-    // This is a workaround to trigger the event every 10 seconds
-    setInterval(() => {
-        Utils.fileWritten$.next({ topic: 'metrics', content: 'test2' });
-    }, 20000);
+        intervalsSet = true;
+    }
 });
 
 module.exports = router;

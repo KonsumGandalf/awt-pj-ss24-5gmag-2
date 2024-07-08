@@ -3,10 +3,11 @@ const path = require('path');
 const dir = require('node-dir');
 const { chain, isEmpty } = require('lodash');
 const { BehaviorSubject } = require('rxjs');
+const { faker } = require('@faker-js/faker');
 
 
 class Utils {
-    static fileWritten$ = new BehaviorSubject('');
+    static fileWritten$ = new BehaviorSubject({ });
 
     static async writeToDisk(filepath, content, topic) {
         return new Promise((resolve, reject) => {
@@ -86,6 +87,14 @@ class Utils {
             return [rangeString];
         }
     }
+
+    static triggerIrregularInterval(topic, content, minDelay, maxDelay) {
+        const delay = faker.number.int({ min: minDelay, max: maxDelay });
+        setTimeout(() => {
+            this.fileWritten$.next({ topic, content });
+            this.triggerIrregularInterval(topic, content, minDelay, maxDelay);
+        }, delay);
+    };
 }
 
 module.exports = Utils;

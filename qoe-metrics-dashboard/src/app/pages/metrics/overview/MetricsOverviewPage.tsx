@@ -7,21 +7,23 @@ import { Alert, Button, CircularProgress } from '@mui/material';
 import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
-    GridColDef,
+    GridColDef, GridFooterContainer, GridPagination,
     GridRenderCellParams,
     GridRowParams,
     GridRowSelectionModel,
-    GridToolbar,
+    GridToolbar
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
-import MetricTypeIcon from '../../../components/metric-type-icon/metric-type-icon';
-import ReloadButton from '../../../components/reload-button/reload-button';
+import FooterButton from '../../../components/footer-button/footer-button';
+import { MetricTypeIcon } from '../../../components/metric-type-icon/metric-type-icon';
+import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
 import { useMetricsReportList } from '../../../hooks/metrics-api';
 import { EMetricsType } from '../../../models/enums/metrics/metrics-type.enum';
 import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
 import { ESseTopic } from '../../../models/enums/shared/sse-topic.enum';
+import { ConsumptionReportingUnit } from '../../../models/types/consumption/responses/consumption-details-report.interface';
 import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../../../models/types/metrics/requests/metrics-overview-request-params.interface';
 import { TMetricsOverviewReport } from '../../../models/types/metrics/responses/metrics-overview-report.type';
@@ -141,26 +143,12 @@ function MetricsOverviewPage() {
 
     return (
         <div className="page-wrapper">
-            <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
-            <Button
-                sx={{
-                    alignSelf: 'center',
-                    color: 'background.default',
-                    size: 'large',
-                    margin: '1rem',
-                    inlineSize: '12rem',
-                }}
-                onClick={handleAggregation}
-                variant="contained"
-            >
-                Aggregate {selectedIds.length} reports
-            </Button>
             <DataGrid
                 rows={reportList}
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}
                 initialState={{
                     pagination: {
-                        paginationModel: { pageSize: ROWS_PER_PAGE },
+                        paginationModel: { pageSize: 10 },
                     },
                     sorting: {
                         sortModel: [{ field: 'reportTime', sort: ESortingOrder.ASC }],
@@ -187,7 +175,9 @@ function MetricsOverviewPage() {
                 }}
                 isRowSelectable={isRowSelectable}
                 onRowSelectionModelChange={handleRowSelection}
-                getRowClassName={() => 'row'}
+                getRowClassName={(params: GridRowParams) =>
+                    isRowSelectable(params) ? 'row': 'disabled row'
+                }
                 sx={{
                     '& .MuiDataGrid-row:hover': {
                         backgroundColor: theme.palette.primary.light,
@@ -198,6 +188,7 @@ function MetricsOverviewPage() {
                         alignItems: 'center',
                     },
                     '& .MuiDataGrid-toolbarContainer': {
+                        background: 'var(--DataGrid-containerBackground)',
                         button: {
                             padding: '0.75rem',
                             margin: '0.5rem',
@@ -208,7 +199,27 @@ function MetricsOverviewPage() {
                     },
                 }}
                 loading={loading}
-                slots={{ toolbar: GridToolbar }}
+                slots={{
+                    toolbar: GridToolbar,
+                    footer: () => (
+                        <FooterButton>
+                            <Button
+                                sx={{
+                                    alignSelf: 'center',
+                                    color: 'background.default',
+                                    size: 'large',
+                                    margin: '1rem',
+                                    inlineSize: '12rem',
+                                }}
+                                onClick={handleAggregation}
+                                variant="contained"
+                            >
+                                Aggregate {selectedIds.length} reports
+                            </Button>
+                            <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
+                        </FooterButton>
+                    )
+                }}
             />
         </div>
     );
