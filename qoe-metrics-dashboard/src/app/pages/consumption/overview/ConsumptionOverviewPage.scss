@@ -22,7 +22,7 @@
     .MuiDataGrid-root {
         overflow: hidden;
 
-        #\:r9\: {
+        [aria-label="Export"] {
             display: none;
         }
     }

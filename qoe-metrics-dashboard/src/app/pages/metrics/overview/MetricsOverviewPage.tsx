@@ -148,7 +148,7 @@ function MetricsOverviewPage() {
                 columns={columns.map((column) => defaults({}, column, { flex: 1 }))}
                 initialState={{
                     pagination: {
-                        paginationModel: { pageSize: 5 },
+                        paginationModel: { pageSize: 10 },
                     },
                     sorting: {
                         sortModel: [{ field: 'reportTime', sort: ESortingOrder.ASC }],

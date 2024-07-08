@@ -32,3 +32,4 @@ export function MetricTypeIcon(props: MetricTypeIconProps) {
     );
 }
 
+export default MetricTypeIcon;

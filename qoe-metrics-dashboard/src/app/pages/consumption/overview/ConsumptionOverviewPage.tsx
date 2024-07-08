@@ -138,7 +138,7 @@ function ConsumptionOverviewPage() {
                     }}}
                 initialState={{
                     pagination: {
-                        paginationModel: { pageSize: 10 },
+                        paginationModel: { pageSize: 10 }
                     },
                     sorting: {
                         sortModel: [{ field: 'reportingClientId', sort: ESortingOrder.ASC }],
