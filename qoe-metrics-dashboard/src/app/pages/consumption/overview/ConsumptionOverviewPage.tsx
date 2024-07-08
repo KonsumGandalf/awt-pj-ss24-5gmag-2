@@ -14,7 +14,7 @@ import {
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
-import ReloadButton from '../../../components/reload-button/reload-button';
+import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
 import { useConsumptionReportList } from '../../../hooks/consumption-api';
 import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
@@ -92,25 +92,17 @@ function ConsumptionOverviewPage() {
         navigate('/consumption/details?' + params.toString());
     }
 
-    function consumptionReportingUnitsCellRenderer(
+    function consumptionReportingUnitsRenderer(
         params: GridRenderCellParams,
         cellName: keyof ConsumptionReportingUnit
     ) {
         const consumptionReports = params.value as ConsumptionReportingUnit[];
         return (
-            <div>
+            <div className='consumptionUnit'>
                 {consumptionReports.map((metricType: ConsumptionReportingUnit, index: number) => (
-                    <>
-                        <TableCell
-                            key={index}
-                            sx={{
-                                borderBottom: index === consumptionReports.length - 1 ? 'none' : 'default',
-                            }}
-                        >
+                        <p className="unitCell">
                             {`${metricType[cellName]}`}
-                        </TableCell>
-                        <br />
-                    </>
+                        </p>
                 ))}
             </div>
         );
@@ -122,23 +114,11 @@ function ConsumptionOverviewPage() {
         { field: 'stability', headerName: 'Stability', maxWidth: 120 },
         {
             field: 'consumptionReportingUnits',
-            headerName: 'Consumption Reporting Units',
-            renderHeader: () => (
-                <TableRow>
-                    <TableCell>Start Time&emsp;&emsp;&emsp;&emsp;</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Stability</TableCell>
-                    <TableCell>Media Consumed</TableCell>
-                </TableRow>
-            ),
+            headerName: 'Media Consumed',
+            cellClassName: 'consumptionUnit',
             renderCell: (params: GridRenderCellParams) => {
                 return (
-                    <TableRow>
-                        <TableCell>{consumptionReportingUnitsCellRenderer(params, 'startTime')}</TableCell>
-                        <TableCell>{consumptionReportingUnitsCellRenderer(params, 'duration')}</TableCell>
-                        <TableCell>{consumptionReportingUnitsCellRenderer(params, 'stability')}</TableCell>
-                        <TableCell>{consumptionReportingUnitsCellRenderer(params, 'mediaConsumed')}</TableCell>
-                    </TableRow>
+                        <>{consumptionReportingUnitsRenderer(params, 'mediaConsumed')}</>
                 );
             },
             sortable: false,
@@ -175,7 +155,6 @@ function ConsumptionOverviewPage() {
                     includeOutliers: true,
                 }}
                 autosizeOnMount
-                checkboxSelection
                 onRowClick={(params: GridRowParams<IConsumptionDetailReport>) => {
                     const filterQueryParams = pick(params.row, ['reportingClientId', 'consumptionReportingUnits']);
                     handleClickMetric(filterQueryParams);
