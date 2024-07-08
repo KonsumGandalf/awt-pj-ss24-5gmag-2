@@ -43,5 +43,3 @@ export function ReloadButton({ action, topic }: { action: () => void; topic: str
         </ReloadButton>
     );
 }
-
-export default ReloadButton;

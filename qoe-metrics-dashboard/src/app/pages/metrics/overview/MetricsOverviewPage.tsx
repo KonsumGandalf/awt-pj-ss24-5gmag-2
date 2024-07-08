@@ -15,8 +15,8 @@ import {
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
-import MetricTypeIcon from '../../../components/metric-type-icon/metric-type-icon';
-import ReloadButton from '../../../components/reload-button/reload-button';
+import { MetricTypeIcon } from '../../../components/metric-type-icon/metric-type-icon';
+import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
 import { useMetricsReportList } from '../../../hooks/metrics-api';
 import { EMetricsType } from '../../../models/enums/metrics/metrics-type.enum';
