@@ -14,7 +14,7 @@ import {
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
-import ButtonFooter from '../../../components/button-footer/button-footer';
+import FooterButton from '../../../components/footer-button/footer-button';
 import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
 import { useConsumptionReportList } from '../../../hooks/consumption-api';
@@ -187,9 +187,9 @@ function ConsumptionOverviewPage() {
                 slots={{
                     toolbar: GridToolbar,
                     footer: () => (
-                        <ButtonFooter>
+                        <FooterButton>
                             <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION} />
-                        </ButtonFooter>
+                        </FooterButton>
                     )
                 }}
                 getRowHeight={() => 'auto'}

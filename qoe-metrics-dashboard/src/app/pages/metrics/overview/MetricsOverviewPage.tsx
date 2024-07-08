@@ -15,7 +15,7 @@ import {
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
-import ButtonFooter from '../../../components/button-footer/button-footer';
+import FooterButton from '../../../components/footer-button/footer-button';
 import { MetricTypeIcon } from '../../../components/metric-type-icon/metric-type-icon';
 import { ReloadButton } from '../../../components/reload-button/reload-button';
 import { EnvContext } from '../../../env.context';
@@ -202,7 +202,7 @@ function MetricsOverviewPage() {
                 slots={{
                     toolbar: GridToolbar,
                     footer: () => (
-                        <ButtonFooter>
+                        <FooterButton>
                             <Button
                                 sx={{
                                     alignSelf: 'center',
@@ -217,7 +217,7 @@ function MetricsOverviewPage() {
                                 Aggregate {selectedIds.length} reports
                             </Button>
                             <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
-                        </ButtonFooter>
+                        </FooterButton>
                     )
                 }}
             />
