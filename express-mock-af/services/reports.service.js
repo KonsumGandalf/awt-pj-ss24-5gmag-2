@@ -1,6 +1,6 @@
 const xml2js = require('xml2js');
-const { filter, pick, chain, merge, isMatch, isNil, omitBy, defaults } = require('lodash');
-const Utils = require('../utils/Utils');
+const { filter, pick, chain, isNil, omitBy, defaults } = require('lodash');
+const Utils = require('../utils/utils');
 
 class ReportsService {
   /**
@@ -59,14 +59,14 @@ class ReportsService {
             })
         )).filter(content => content.length !== 0).flat();
 
-    const transformedJsonResponse = await this.transformXmlToReport(
-      readContent
-    );
-    return await this.overviewMetricsReport(
-      transformedJsonResponse,
-      queryFilter
-    );
-  }
+        const transformedJsonResponse = await this.transformXmlToReport(
+          readContent
+        );
+        return await this.overviewMetricsReport(
+          transformedJsonResponse,
+          queryFilter
+        );
+    }
 
     async generateConsumptionReport(provisionSessionIds, queryFilter) {
         const readContent = (await Promise.all(
@@ -105,41 +105,42 @@ class ReportsService {
             }
         );
 
-    return chain(reports)
-      .map((report) => {
-        const receptionReport = pick(report.ReceptionReport, [
-          "clientID",
-          "contentURI",
-        ]);
+        return chain(reports)
+            .map((report) => {
+                const receptionReport = pick(report.ReceptionReport, [
+                    "clientID",
+                    "contentURI",
+                ]);
 
-        const qoeReport = pick(report.ReceptionReport.QoeReport, [
-          "reportPeriod",
-          "reportTime",
-          "recordingSessionId",
-        ]);
+                const qoeReport = pick(report.ReceptionReport.QoeReport, [
+                    "reportPeriod",
+                    "reportTime",
+                    "recordingSessionId",
+                ]);
 
-        const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
-        const availableMetrics = Array.isArray(qoeMetric)
-          ? qoeMetric.map((metric) => {
-              return Object.keys(metric)[0];
+                const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
+                const availableMetrics = Array.isArray(qoeMetric)
+                    ? qoeMetric.map((metric) => {
+                        return Object.keys(metric)[0];
+                    })
+                    : [];
+
+                return defaults({}, receptionReport, qoeReport, { availableMetrics });
             })
-          : [];
+            .orderBy(orderProperty, sortingOrder)
+            .thru((chainInstance) => {
+                let result = chain(chainInstance);
+                if (offset !== undefined) {
+                    result = result.drop(offset);
+                }
+                if (limit !== undefined) {
+                    result = result.take(limit);
+                }
+                return result.value();
+            })
+            .value();
+    }
 
-        return defaults({}, receptionReport, qoeReport, { availableMetrics });
-      })
-      .orderBy(orderProperty, sortingOrder)
-      .thru((chainInstance) => {
-        let result = chain(chainInstance);
-        if (offset !== undefined) {
-          result = result.drop(offset);
-        }
-        if (limit !== undefined) {
-          result = result.take(limit);
-        }
-        return result;
-      })
-      .value();
-  }
 
     /**
      * Filters reports based on the query parameters
