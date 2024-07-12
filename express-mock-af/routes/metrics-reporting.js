@@ -1,13 +1,12 @@
-var express = require('express');
+const express = require('express');
 const Utils = require('../utils/utils');
-var router = express.Router();
 
-router.post('/:provisioningSessionId/:metricsReportingConfigurationId', function (req, res, next) {
+const router = express.Router();
+
+router.post('/:provisioningSessionId/:metricsReportingConfigurationId', (req, res, next) => {
     const payload = req.body;
-    const path = `public/reports/${
-      req.params.provisioningSessionId
-    }/metrics_reports/${
-      req.params.metricsReportingConfigurationId
+    const path = `public/reports/${req.params.provisioningSessionId}/metrics_reports/${
+        req.params.metricsReportingConfigurationId
     }/${new Date().toISOString()}.xml`;
 
     Utils.writeToDisk(path, payload, 'metrics');

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const dir = require('node-dir');
-const { BehaviorSubject } = require('rxjs');
 const Utils = require('./utils');
 
 jest.mock('fs');
@@ -58,9 +57,7 @@ describe('utils', () => {
                 endCallback(null, ['file1.txt', 'file2.txt']);
             });
 
-            fs.readFileSync.mockImplementation((filePath) => {
-                return filePath === 'file1.txt' ? 'content1' : 'content2';
-            });
+            fs.readFileSync.mockImplementation((filePath) => (filePath === 'file1.txt' ? 'content1' : 'content2'));
 
             const result = await Utils.readFiles(directoryPathRoot, fileMatchRegex);
 

@@ -3,43 +3,34 @@ const { filter, pick, chain, isNil, omitBy, defaults } = require('lodash');
 const Utils = require('../utils/utils');
 
 class ReportsService {
-  /**
-   * Translates XML to JSON
-   *
-   * @param xml
-   * @returns {Promise<*>}
-   */
-  async translateXmlToJson(xml) {
-    return xml2js.parseStringPromise(xml, {
-      mergeAttrs: true,
-      explicitArray: false,
-    });
-  }
+    /**
+     * Translates XML to JSON
+     *
+     * @param xml
+     * @returns {Promise<*>}
+     */
+    async translateXmlToJson(xml) {
+        return xml2js.parseStringPromise(xml, {
+            mergeAttrs: true,
+            explicitArray: false,
+        });
+    }
 
-  /**
-   * Transforms XML to a report
-   *
-   * @param XmlFiles
-   * @returns {Promise<any[]>}
-   */
-  async transformXmlToReport(XmlFiles) {
-    return Object.values(
-      omitBy(
-        await Promise.all(
-          XmlFiles.map(async (file) => {
-            return await this.translateXmlToJson(file);
-          })
-        ),
-        isNil
-      )
-    );
-  }
+    /**
+     * Transforms XML to a report
+     *
+     * @param XmlFiles
+     * @returns {Promise<any[]>}
+     */
+    async transformXmlToReport(XmlFiles) {
+        return Object.values(
+            omitBy(await Promise.all(XmlFiles.map(async (file) => await this.translateXmlToJson(file))), isNil)
+        );
+    }
 
     transformJSONtoReport(jsonArray) {
         if (Array.isArray(jsonArray)) {
-            return jsonArray.map(jsonObj => {
-                return JSON.parse(jsonObj);
-            });
+            return jsonArray.map((jsonObj) => JSON.parse(jsonObj));
         }
 
         return JSON.parse(jsonArray);
@@ -53,40 +44,35 @@ class ReportsService {
      * @returns {Promise<(any)[] | *>}
      */
     async generateMetricsReport(provisionSessionIds, queryFilter) {
-        const readContent = (await Promise.all(
-            provisionSessionIds.map(async (id) => {
-                return Utils.readFiles(`public/reports/${id}/metrics_reports`);
-            })
-        )).filter(content => content.length !== 0).flat();
+        const readContent = (
+            await Promise.all(
+                provisionSessionIds.map(async (id) => Utils.readFiles(`public/reports/${id}/metrics_reports`))
+            )
+        )
+            .filter((content) => content.length !== 0)
+            .flat();
 
-        const transformedJsonResponse = await this.transformXmlToReport(
-          readContent
-        );
-        return await this.overviewMetricsReport(
-          transformedJsonResponse,
-          queryFilter
-        );
+        const transformedJsonResponse = await this.transformXmlToReport(readContent);
+        return await this.overviewMetricsReport(transformedJsonResponse, queryFilter);
     }
 
     async generateConsumptionReport(provisionSessionIds, queryFilter) {
-        const readContent = (await Promise.all(
-            provisionSessionIds.map(async (id) => {
-                return Utils.readFiles(`public/reports/${id}/consumption_reports`);
-            })
-        )).filter(content => content.length !== 0).flat();
+        const readContent = (
+            await Promise.all(
+                provisionSessionIds.map(async (id) => Utils.readFiles(`public/reports/${id}/consumption_reports`))
+            )
+        )
+            .filter((content) => content.length !== 0)
+            .flat();
         const transformedJsonResponse = this.transformJSONtoReport(readContent);
 
         return await this.overviewConsumptionReport(transformedJsonResponse, queryFilter);
     }
 
     async overviewConsumptionReport(reports, queryFilter) {
-        const { } = defaults(
-        );
-
         return chain(reports)
-            .map((report) => {
-                return report;
-            }).value();
+            .map((report) => report)
+            .value();
     }
 
     /**
@@ -97,32 +83,24 @@ class ReportsService {
      * @returns {Promise<(any)[]>}
      */
     async overviewMetricsReport(reports, queryFilter) {
-        const { orderProperty, offset, limit, sortingOrder } = defaults(
-            queryFilter,
-            {
-                orderProperty: 'reportTime',
-                sortingOrder: 'desc'
-            }
-        );
+        const { orderProperty, offset, limit, sortingOrder } = defaults(queryFilter, {
+            orderProperty: 'reportTime',
+            sortingOrder: 'desc',
+        });
 
         return chain(reports)
             .map((report) => {
-                const receptionReport = pick(report.ReceptionReport, [
-                    "clientID",
-                    "contentURI",
-                ]);
+                const receptionReport = pick(report.ReceptionReport, ['clientID', 'contentURI']);
 
                 const qoeReport = pick(report.ReceptionReport.QoeReport, [
-                    "reportPeriod",
-                    "reportTime",
-                    "recordingSessionId",
+                    'reportPeriod',
+                    'reportTime',
+                    'recordingSessionId',
                 ]);
 
                 const qoeMetric = report.ReceptionReport.QoeReport.QoeMetric;
                 const availableMetrics = Array.isArray(qoeMetric)
-                    ? qoeMetric.map((metric) => {
-                        return Object.keys(metric)[0];
-                    })
+                    ? qoeMetric.map((metric) => Object.keys(metric)[0])
                     : [];
 
                 return defaults({}, receptionReport, qoeReport, { availableMetrics });
@@ -141,7 +119,6 @@ class ReportsService {
             .value();
     }
 
-
     /**
      * Filters reports based on the query parameters
      *
@@ -151,28 +128,21 @@ class ReportsService {
      */
     filterReports(reportsList, queryFilter) {
         const clearQueryFilter = omitBy(queryFilter, isNil);
-        return reportsList.filter(report => {
+        return reportsList.filter((report) => {
             if (report.ReceptionReport) {
                 const qoeReport = report.ReceptionReport.QoeReport;
                 return (
-                    qoeReport.recordingSessionId ===
-                    clearQueryFilter.recordingSessionId &&
+                    qoeReport.recordingSessionId === clearQueryFilter.recordingSessionId &&
                     (qoeReport.reportTime === clearQueryFilter.reportTime ||
                         clearQueryFilter.reportTime.includes(qoeReport.reportTime))
                 );
-            } else if (report.consumptionReportingUnits) {
-                const filteredUnits = filter(
-                    report.consumptionReportingUnits,
-                    (unit) => {
-                        const sameStartTime = queryFilter.startTime
-                            ? unit.startTime === queryFilter.startTime
-                            : true;
-                        const sameDuration = queryFilter.duration
-                            ? unit.duration === +queryFilter.duration
-                            : true;
-                        return sameStartTime && sameDuration;
-                    }
-                );
+            }
+            if (report.consumptionReportingUnits) {
+                const filteredUnits = filter(report.consumptionReportingUnits, (unit) => {
+                    const sameStartTime = queryFilter.startTime ? unit.startTime === queryFilter.startTime : true;
+                    const sameDuration = queryFilter.duration ? unit.duration === +queryFilter.duration : true;
+                    return sameStartTime && sameDuration;
+                });
 
                 const sameReportingClientId = queryFilter.reportingClientId
                     ? report.reportingClientId === queryFilter.reportingClientId

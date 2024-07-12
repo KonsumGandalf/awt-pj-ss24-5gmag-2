@@ -4,10 +4,11 @@ const { Subject } = require('rxjs');
 const Utils = require('../../utils/utils');
 
 jest.mock('../../utils/utils', () => ({
-    triggerIrregularInterval: jest.fn()
+    triggerIrregularInterval: jest.fn(),
 }));
 
 const router = require('../../app');
+
 const app = express();
 app.use(router);
 
@@ -17,9 +18,7 @@ describe('GET /reload', () => {
         const fileWritten$ = new Subject();
         Utils.fileWritten$ = fileWritten$;
 
-        req = request(app)
-            .get('/reporting-ui/sse/reload')
-            .set('Accept', 'text/event-stream');
+        req = request(app).get('/reporting-ui/sse/reload').set('Accept', 'text/event-stream');
     });
 
     it('should return a sse stream on connection', (done) => {
@@ -31,8 +30,8 @@ describe('GET /reload', () => {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'text/event-stream; charset=utf-8',
                 'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-                'Content-Encoding': 'none'
+                Connection: 'keep-alive',
+                'Content-Encoding': 'none',
             });
 
             const testEvent = { content: 'test content', topic: 'testTopic' };

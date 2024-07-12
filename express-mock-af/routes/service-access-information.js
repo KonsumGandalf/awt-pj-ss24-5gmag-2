@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var moment = require('moment');
+const express = require('express');
 
-//const baseUrl = 'http://192.168.178.20:3003';
+const router = express.Router();
+const moment = require('moment');
+
+// const baseUrl = 'http://192.168.178.20:3003';
 const baseUrl = 'http://10.147.67.85:3003';
 const sai = {
     6: {
@@ -13,34 +14,35 @@ const sai = {
                 {
                     locator: `${baseUrl}/content/animated/dash.mpd`,
                     contentType: 'application/dash+xml',
-                    profiles: [
-                        'urn:mpeg:dash:profile:isoff-live:2011'
-                    ]
-                }
-            ]
+                    profiles: ['urn:mpeg:dash:profile:isoff-live:2011'],
+                },
+            ],
         },
         clientConsumptionReportingConfiguration: {
             serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
             locationReporting: true,
             samplePercentage: 100,
             reportingInterval: 10,
-            accessReporting: true
+            accessReporting: true,
         },
-        clientMetricsReportingConfigurations: [{
-            metricsReportingConfigurationId: "QM10",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:3GPP:ns:PSS:DASH:QM10",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }, {
-            metricsReportingConfigurationId: "other",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:some:other:scheme",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }]
+        clientMetricsReportingConfigurations: [
+            {
+                metricsReportingConfigurationId: 'QM10',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:3GPP:ns:PSS:DASH:QM10',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+            {
+                metricsReportingConfigurationId: 'other',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:some:other:scheme',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+        ],
     },
     5: {
         provisioningSessionId: 5,
@@ -50,42 +52,43 @@ const sai = {
                 {
                     locator: `${baseUrl}/content/christmas-video/dash.mpd`,
                     contentType: 'application/dash+xml',
-                    profiles: [
-                        'urn:mpeg:dash:profile:isoff-live:2011'
-                    ]
-                }
-            ]
+                    profiles: ['urn:mpeg:dash:profile:isoff-live:2011'],
+                },
+            ],
         },
         clientConsumptionReportingConfiguration: {
             serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
             locationReporting: true,
             samplePercentage: 100,
             reportingInterval: 10,
-            accessReporting: true
+            accessReporting: true,
         },
-        clientMetricsReportingConfigurations: [{
-            metricsReportingConfigurationId: "QM10",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:3GPP:ns:PSS:DASH:QM10",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }, {
-            metricsReportingConfigurationId: "other",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:some:other:scheme",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }]
+        clientMetricsReportingConfigurations: [
+            {
+                metricsReportingConfigurationId: 'QM10',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:3GPP:ns:PSS:DASH:QM10',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+            {
+                metricsReportingConfigurationId: 'other',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:some:other:scheme',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+        ],
     },
     4: {
         provisioningSessionId: 4,
-        provisioningSessionType: 'DOWNLINK'
+        provisioningSessionType: 'DOWNLINK',
     },
     3: {
         provisioningSessionId: 3,
-        provisioningSessionType: 'DOWNLINK'
+        provisioningSessionType: 'DOWNLINK',
     },
     2: {
         provisioningSessionId: 2,
@@ -95,36 +98,35 @@ const sai = {
                 {
                     locator: 'https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd',
                     contentType: 'application/dash+xml',
-                    profiles: [
-                        'urn:mpeg:dash:profile:isoff-live:2011'
-                    ]
-                }
-            ]
+                    profiles: ['urn:mpeg:dash:profile:isoff-live:2011'],
+                },
+            ],
         },
         clientConsumptionReportingConfiguration: {
             serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
             locationReporting: true,
             samplePercentage: 99,
             reportingInterval: 10,
-            accessReporting: true
+            accessReporting: true,
         },
-        clientMetricsReportingConfigurations: [{
-            metricsReportingConfigurationId: "QM10",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:3GPP:ns:PSS:DASH:QM10",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }, {
-            metricsReportingConfigurationId: "other",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:some:other:scheme",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }]
-
-
+        clientMetricsReportingConfigurations: [
+            {
+                metricsReportingConfigurationId: 'QM10',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:3GPP:ns:PSS:DASH:QM10',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+            {
+                metricsReportingConfigurationId: 'other',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:some:other:scheme',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+        ],
     },
     1: {
         provisioningSessionId: 1,
@@ -134,39 +136,40 @@ const sai = {
                 {
                     locator: 'https://livesim.dashif.org/livesim/testpic_2s/Manifest.mpd',
                     contentType: 'application/dash+xml',
-                    profiles: [
-                        'urn:mpeg:dash:profile:isoff-live:2011'
-                    ]
-                }
-            ]
+                    profiles: ['urn:mpeg:dash:profile:isoff-live:2011'],
+                },
+            ],
         },
         clientConsumptionReportingConfiguration: {
             serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
             locationReporting: true,
             samplePercentage: 100,
             reportingInterval: 10,
-            accessReporting: true
+            accessReporting: true,
         },
-        clientMetricsReportingConfigurations: [{
-            metricsReportingConfigurationId: "QM10",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:3GPP:ns:PSS:DASH:QM10",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }, {
-            metricsReportingConfigurationId: "other",
-            serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
-            scheme: "urn:some:other:scheme",
-            reportingInterval: 10,
-            samplePercentage: 100.0,
-            samplingPeriod: 10
-        }]
-    }
-}
+        clientMetricsReportingConfigurations: [
+            {
+                metricsReportingConfigurationId: 'QM10',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:3GPP:ns:PSS:DASH:QM10',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+            {
+                metricsReportingConfigurationId: 'other',
+                serverAddresses: [`${baseUrl}/3gpp-m5/v2/`],
+                scheme: 'urn:some:other:scheme',
+                reportingInterval: 10,
+                samplePercentage: 100.0,
+                samplingPeriod: 10,
+            },
+        ],
+    },
+};
 
 /* GET users listing. */
-router.get('/:provisioningSessionId', function (req, res, next) {
+router.get('/:provisioningSessionId', (req, res, next) => {
     res.setHeader('Cache-Control', 'max-age=10');
     res.setHeader('Age', 2);
 
@@ -179,7 +182,7 @@ router.get('/:provisioningSessionId', function (req, res, next) {
     res.setHeader('last-modified', Date.now());
 
     const id = req.params.provisioningSessionId;
-    res.json(sai[id])
+    res.json(sai[id]);
 });
 
 module.exports = router;
