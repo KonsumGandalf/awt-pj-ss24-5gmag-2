@@ -48,7 +48,6 @@ const m8 = {
             name: 'Sintel local'
         },
     ]
-
 }
 
 /* GET users listing. */
