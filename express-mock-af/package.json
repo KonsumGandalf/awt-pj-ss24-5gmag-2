@@ -8,7 +8,7 @@
     "debug": "nodemon --inspect ./bin/www",
     "test": "jest",
     "coverage": "jest --coverage",
-    "lint": "eslint"
+    "lint": "eslint --fix"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
