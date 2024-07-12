@@ -1,5 +1,5 @@
 var express = require('express');
-var Utils = require('../utils/Utils.js');
+var Utils = require('../utils/utils.js');
 var router = express.Router();
 
 router.post('/:provisioningSessionId?', function (req, res, next) {

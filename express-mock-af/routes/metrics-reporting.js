@@ -1,5 +1,5 @@
 var express = require('express');
-const Utils = require('../utils/Utils');
+const Utils = require('../utils/utils');
 var router = express.Router();
 
 router.post('/:provisioningSessionId/:metricsReportingConfigurationId', function (req, res, next) {

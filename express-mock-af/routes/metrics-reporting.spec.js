@@ -1,8 +1,8 @@
 const request = require('supertest');
 const express = require('express');
-const Utils = require('../utils/Utils');
+const Utils = require('../utils/utils');
 
-jest.mock('../utils/Utils', () => ({
+jest.mock('../utils/utils', () => ({
     writeToDisk: jest.fn()
 }));
 

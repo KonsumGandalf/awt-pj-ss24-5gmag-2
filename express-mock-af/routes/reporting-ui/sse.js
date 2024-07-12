@@ -1,5 +1,5 @@
 const express = require('express');
-const Utils = require('../../utils/Utils');
+const Utils = require('../../utils/utils');
 const router = express.Router();
 
 /**

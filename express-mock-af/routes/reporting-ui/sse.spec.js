@@ -1,9 +1,9 @@
 const request = require('supertest');
 const express = require('express');
 const { Subject } = require('rxjs');
-const Utils = require('../../utils/Utils');
+const Utils = require('../../utils/utils');
 
-jest.mock('../../utils/Utils', () => ({
+jest.mock('../../utils/utils', () => ({
     triggerIrregularInterval: jest.fn()
 }));
 
