@@ -11,7 +11,7 @@ const reportsService = new ReportsService();
 router.get('/', async (req, res) => {
     let provisionSessionIds = req.query.provisionSessionIds;
     if (!provisionSessionIds) {
-        return res.status(400).send('provisionSessionId is required');
+        return res.status(400).send('provisionSessionIds is required');
     }
 
     provisionSessionIds = Utils.regexRangeToArray(provisionSessionIds);
