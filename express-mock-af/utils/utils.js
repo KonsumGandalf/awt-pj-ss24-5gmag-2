@@ -5,7 +5,15 @@ const { chain, isEmpty } = require('lodash');
 const { BehaviorSubject } = require('rxjs');
 const { faker } = require('@faker-js/faker');
 
+/**
+ * Utils are used to provide utility functions for the application.
+ */
 class Utils {
+    /**
+     * A BehaviorSubject that notifies subscribers when a file has been written.
+     *
+     * @type {BehaviorSubject<unknown>}
+     */
     static fileWritten$ = new BehaviorSubject({});
 
     static async writeToDisk(filepath, content, topic) {
@@ -89,6 +97,14 @@ class Utils {
         return result;
     }
 
+    /**
+     * Triggers an interval with a random delay between minDelay and maxDelay.
+     *
+     * @param topic
+     * @param content
+     * @param minDelay
+     * @param maxDelay
+     */
     static triggerIrregularInterval(topic, content, minDelay, maxDelay) {
         const delay = faker.number.int({ min: minDelay, max: maxDelay });
         setTimeout(() => {
