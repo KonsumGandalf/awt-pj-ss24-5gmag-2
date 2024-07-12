@@ -79,10 +79,10 @@ In addition to the Postman functionality, we also provide a test backend. This i
 ## Dashboard UI 
 The Dashboard UI is a simple web page that displays the information received from the backend. The following elements provide the backend information
 
-| Name                  | Path                                       | Description                                                                                   |
-|-----------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `routes-reporting-ui` | [routes/reporting-ui](routes/reporting-ui) | Serve as controller and accept request from the frontend                                      |
-| `services`            | [services](services)                       | Provide dashboard domain concerning functionality like filtering metrics                      |
-| `utils`               | [utils](utils)                             | Provide generic functionality that can be used throughout all backend code like reading files |
+| Name                  | Path                                       | Description                                                                                  |
+|-----------------------|--------------------------------------------|----------------------------------------------------------------------------------------------|
+| `routes-reporting-ui` | [routes/reporting-ui](routes/reporting-ui) | Serve as controller and accept requests from the frontend                                    |
+| `services`            | [services](services)                       | Provide dashboard domain concerning functionality like filtering metrics reports             |
+| `utils`               | [utils](utils)                             | Provide generic functionality that can be used throughout all backend code f.e reading files |
 
 
