@@ -11,6 +11,15 @@ import { MetricsDetailPageContext } from './MetricsDetailPageContext';
 
 import './MetricsDetailPage.scss';
 
+/**
+ * MetricsDetailPage component displays the details of a metrics report. It uses the useSearchParams hook to get the search parameters from the URL.
+ *
+ * When loading, it displays a loading spinner.
+ *
+ * When an error occurs, it displays the error message.
+ *
+ * When no data is found, it displays a message.
+ */
 function MetricsDetailPage() {
     const envCtx = useContext(EnvContext);
 

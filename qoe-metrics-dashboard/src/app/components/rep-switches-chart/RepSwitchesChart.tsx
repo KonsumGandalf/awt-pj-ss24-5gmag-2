@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import _, { every } from 'lodash';
+import { every, minBy } from 'lodash';
 import {
     CartesianGrid,
     DefaultLegendContentProps,
@@ -20,6 +20,14 @@ import { graphColors } from '../../../theme';
 import { TMappedMpdInfo, TMappedRepSwitchList } from '../../models/types/metrics/qoe-report.type';
 import { TypographyTickY, XAxisTick } from '../utils/chart';
 
+/**
+ * RepSwitchesChart component displays the representation switches data of a report. It employs a LineChart from recharts.
+ *
+ * It returns null if there is no representation switches data to display.
+ *
+ * @param {Object} props - The properties object.
+ * @param {TMappedRepSwitchList[]} props.repSwitchList - The representation switches data to be displayed.
+ */
 function RepSwitchesChart({
     repSwitchList,
     mpdInfo,
@@ -65,12 +73,15 @@ function RepSwitchesChart({
 
     const data: { [key: string]: number }[] = [];
 
+    /**
+     * Creates the data points for the chart. It also sets a data point for each timestamp even if there is no data for that timestamp, so the lines are continuous.
+     */
     timestamps.forEach((t) => {
         const datapoint: { [key: string]: number } = {
             timestamp: t,
         };
         Object.entries(dataByMimeType).forEach(([mimeType, entries]) => {
-            const entry = _.minBy(entries, (o) => {
+            const entry = minBy(entries, (o) => {
                 return o.timestamp > t ? Infinity : t - o.timestamp;
             });
             if (entry && entry.timestamp <= t) {
@@ -80,6 +91,9 @@ function RepSwitchesChart({
         data.push(datapoint);
     });
 
+    /**
+     * Renders the legend of the chart. It allows the user to toggle the visibility of the lines.
+     */
     const renderLegend = (props: DefaultLegendContentProps) => {
         const { payload } = props;
 

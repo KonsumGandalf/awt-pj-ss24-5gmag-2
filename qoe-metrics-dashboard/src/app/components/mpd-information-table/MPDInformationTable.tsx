@@ -1,8 +1,15 @@
-import React from 'react';
 import { TMappedMpdInfo } from 'src/app/models/types/metrics/qoe-report.type';
 
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 
+/**
+ * MPDInformationTable component displays the MPD information of a report.
+ *
+ * It returms null if there is no MPD information to display.
+ *
+ * @param {Object} props - The properties object.
+ * @param {TMappedMpdInfo[]} props.mpdInfo - The mapped MPD information to be displayed.
+ */
 function MPDInformationTable({ mpdInfo }: { mpdInfo: TMappedMpdInfo[] }) {
     if (mpdInfo.length === 0) {
         return null;

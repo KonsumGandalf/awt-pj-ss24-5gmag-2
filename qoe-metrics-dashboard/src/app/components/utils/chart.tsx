@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 
 import { useTheme } from '@mui/material';
 
+/**
+ * TypographyTickY component, used to render the y-axis ticks. It renders the value of the tick.
+ */
 export function TypographyTickY(props: { payload: { value: string }; x: number; y: number }) {
     const { payload, x, y } = props;
     const theme = useTheme();
@@ -15,6 +18,9 @@ export function TypographyTickY(props: { payload: { value: string }; x: number; 
     );
 }
 
+/**
+ * TypographyTickX component, used to render the x-axis ticks. It renders the value of the tick.
+ */
 export function TypographyTickX(props: { payload: { value: string }; x: number; y: number }) {
     const { payload, x, y } = props;
     const theme = useTheme();
@@ -36,6 +42,9 @@ export function TypographyTickX(props: { payload: { value: string }; x: number; 
     );
 }
 
+/**
+ * XAxisTick component, used to render the x-axis ticks. It renders time in the format HH:mm:ss:SSS.
+ */
 export function XAxisTick(props: { payload: { value: string }; x: number; y: number }) {
     const { x, y, payload } = props;
     const theme = useTheme();

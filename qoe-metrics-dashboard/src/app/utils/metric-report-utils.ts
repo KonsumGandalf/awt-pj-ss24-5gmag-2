@@ -2,12 +2,21 @@ import { cloneDeep } from 'lodash';
 
 import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
 import {
-    BufferLevel, HttpList,
-    IMetricsDetailReport, MPDInformation, RepSwitchList,
-    TMetricsDetailsReportResponse
+    BufferLevel,
+    HttpList,
+    IMetricsDetailReport,
+    MPDInformation,
+    RepSwitchList,
+    TMetricsDetailsReportResponse,
 } from '../models/types/metrics/responses/metrics-details-report.interface';
 
 export default class MetricReportUtils {
+    /**
+     * Aggregates the metric reports into a single report
+     *
+     * @param metricReports - The list of metric reports
+     * @returns The aggregated metric report
+     */
     static aggregateMetricReports(
         metricReports?: TMetricsDetailsReportResponse
     ): TMetricsDetailsReportResponse | undefined {
@@ -17,14 +26,14 @@ export default class MetricReportUtils {
         const aggregatedReport: IMetricsDetailReport = cloneDeep(metricReports[0]);
         const aggregatedReportTime: string[] = [];
         const aggregatedBl: BufferLevel = {
-            BufferLevelEntry: []
+            BufferLevelEntry: [],
         };
         const aggregatedHttpL: HttpList = {
-            HttpListEntry: []
+            HttpListEntry: [],
         };
         const aggregatedMpd: MPDInformation[] = [];
         const aggregatedRsl: RepSwitchList = {
-            RepSwitchEvent: []
+            RepSwitchEvent: [],
         };
 
         for (const r of metricReports) {
@@ -53,7 +62,7 @@ export default class MetricReportUtils {
             { [EMetricsType.BUFFER_LEVEL]: aggregatedBl },
             { [EMetricsType.HTTP_LIST]: aggregatedHttpL },
             { [EMetricsType.MPD_INFORMATION]: aggregatedMpd },
-            { [EMetricsType.REP_SWITCH_LIST]: aggregatedRsl }
+            { [EMetricsType.REP_SWITCH_LIST]: aggregatedRsl },
         ];
 
         aggregatedReport.ReceptionReport.QoeReport.reportTime = aggregatedReportTime.join(', ');

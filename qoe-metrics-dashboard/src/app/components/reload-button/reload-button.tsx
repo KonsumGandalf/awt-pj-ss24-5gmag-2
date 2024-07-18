@@ -10,8 +10,9 @@ import { useSseReloadList } from '../../hooks/api';
 /**
  * Button to reload the list of reports
  *
- * @param action
- * @param topic
+ * @param {Object} props - The properties object.
+ * @param {Function} props.action - The action to be executed when the button is clicked.
+ * @param {string} props.topic - The topic of the SSE.
  */
 export function ReloadButton({ action, topic }: { action: () => void; topic: string }) {
     const envCtx = useContext(EnvContext);

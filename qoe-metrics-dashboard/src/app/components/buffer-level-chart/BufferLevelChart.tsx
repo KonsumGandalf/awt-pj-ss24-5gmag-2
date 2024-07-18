@@ -6,11 +6,19 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { TMappedBufferLevel } from '../../../app/models/types/metrics/qoe-report.type';
 import { TypographyTickY, XAxisTick } from '../utils/chart';
 
+/**
+ * BufferLevelChart component displays the buffer level data of a report. It employs a LineChart from recharts.
+ *
+ * It returns null if there is no buffer level data to display.
+ *
+ * @param {Object} props - The properties object.
+ * @param {TMappedBufferLevel[]} props.bufferLevel - The buffer level data to be displayed.
+ */
 function BufferLevelChart({ bufferLevel }: { bufferLevel: TMappedBufferLevel[] }) {
     const theme = useTheme();
 
     if (!bufferLevel || !bufferLevel.length) {
-        return <Box>No data</Box>;
+        return null;
     }
 
     return (
