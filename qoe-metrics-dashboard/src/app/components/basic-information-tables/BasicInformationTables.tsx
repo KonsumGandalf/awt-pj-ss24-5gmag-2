@@ -1,4 +1,3 @@
-import React from 'react';
 import dayjs from 'dayjs';
 
 import { Box, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
@@ -7,6 +6,13 @@ import { TMappedReportDetails } from '../../../app/models/types/metrics/qoe-repo
 
 import './BasicInformationTables.scss';
 
+/**
+ * BasicInformationTables component displays the basic information of a report.
+ *
+ * @param {Object} props - The properties object.
+ * @param {TMappedReportDetails} props.reportDetails - The mapped details of the report to be displayed.
+ *
+ */
 function BasicInformationTables({ reportDetails }: { reportDetails: TMappedReportDetails }) {
     return (
         <Box display={'flex'} flexDirection={'column'} gap={'2rem'} width={1}>

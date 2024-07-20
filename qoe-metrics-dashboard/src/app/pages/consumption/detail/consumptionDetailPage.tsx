@@ -1,11 +1,22 @@
-import { Box, CircularProgress, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+import { Box, CircularProgress, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+
 import { EnvContext } from '../../../env.context';
 import { useConsumptionReportDetail } from '../../../hooks/consumption-api';
 
 import './ConsumptionDetailPage.scss';
 
+/**
+ * ConsumptionDetailPage component displays the details of a consumption report. It uses the useSearchParams hook to get the search parameters from the URL.
+ *
+ * When loading, it displays a loading spinner.
+ *
+ * When an error occurs, it displays the error message.
+ *
+ * When no data is found, it displays a message.
+ */
 function ConsumptionDetailPage() {
     const envCtx = useContext(EnvContext);
 
