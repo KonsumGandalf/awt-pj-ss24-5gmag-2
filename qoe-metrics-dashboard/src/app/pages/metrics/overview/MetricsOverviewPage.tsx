@@ -7,11 +7,13 @@ import { Alert, Button, CircularProgress } from '@mui/material';
 import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
-    GridColDef, GridFooterContainer, GridPagination,
+    GridColDef,
+    GridFooterContainer,
+    GridPagination,
     GridRenderCellParams,
     GridRowParams,
     GridRowSelectionModel,
-    GridToolbar
+    GridToolbar,
 } from '@mui/x-data-grid';
 
 import { theme } from '../../../../theme';
@@ -52,7 +54,7 @@ function MetricsOverviewPage() {
         {
             provisionSessionIds,
         } as IMetricsRequestParamsOverview,
-        rerender,
+        rerender
     );
 
     if (loading) {
@@ -175,9 +177,7 @@ function MetricsOverviewPage() {
                 }}
                 isRowSelectable={isRowSelectable}
                 onRowSelectionModelChange={handleRowSelection}
-                getRowClassName={(params: GridRowParams) =>
-                    isRowSelectable(params) ? 'row': 'disabled row'
-                }
+                getRowClassName={(params: GridRowParams) => (isRowSelectable(params) ? 'row' : 'disabled row')}
                 sx={{
                     '& .MuiDataGrid-row:hover': {
                         backgroundColor: theme.palette.primary.light,
@@ -213,12 +213,13 @@ function MetricsOverviewPage() {
                                 }}
                                 onClick={handleAggregation}
                                 variant="contained"
+                                disabled={!selectedIds.length}
                             >
                                 Aggregate {selectedIds.length} reports
                             </Button>
                             <ReloadButton action={onReload} topic={ESseTopic.METRICS} />
                         </FooterButton>
-                    )
+                    ),
                 }}
             />
         </div>
