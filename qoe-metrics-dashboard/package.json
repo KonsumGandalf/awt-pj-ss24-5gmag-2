@@ -5,7 +5,7 @@
     "scripts": {
         "start": "nx serve",
         "build": "nx build",
-        "test": "nx test"
+        "test": "vitest"
     },
     "private": true,
     "dependencies": {
@@ -14,7 +14,12 @@
         "@fontsource/roboto": "^5.0.13",
         "@mui/icons-material": "^5.15.18",
         "@mui/material": "^5.15.18",
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/jest-dom": "^6.4.8",
+        "@testing-library/react": "^16.0.0",
+        "@testing-library/react-hooks": "^8.0.1",
         "axios": "^1.7.2",
+        "axios-mock-adapter": "^1.22.0",
         "dayjs": "^1.11.11",
         "dotenv": "^16.4.5",
         "lodash": "^4.17.21",
@@ -40,7 +45,6 @@
         "@swc/cli": "~0.3.12",
         "@swc/core": "~1.3.85",
         "@swc/helpers": "~0.5.2",
-        "@testing-library/react": "15.0.6",
         "@types/lodash": "^4.17.4",
         "@types/node": "18.16.9",
         "@types/react": "18.3.1",
@@ -64,7 +68,7 @@
         "sass": "^1.55.0",
         "typescript": "~5.4.2",
         "vite": "~5.0.0",
-        "vitest": "^1.3.1"
+        "vitest": "^1.6.0"
     },
     "nx": {
         "includedScripts": []
