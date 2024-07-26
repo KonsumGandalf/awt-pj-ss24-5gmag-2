@@ -8,8 +8,6 @@ import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
     GridColDef,
-    GridFooterContainer,
-    GridPagination,
     GridRenderCellParams,
     GridRowParams,
     GridRowSelectionModel,
@@ -25,7 +23,6 @@ import { useMetricsReportList } from '../../../hooks/metrics-api';
 import { EMetricsType } from '../../../models/enums/metrics/metrics-type.enum';
 import { ESortingOrder } from '../../../models/enums/shared/sorting-order.enum';
 import { ESseTopic } from '../../../models/enums/shared/sse-topic.enum';
-import { ConsumptionReportingUnit } from '../../../models/types/consumption/responses/consumption-details-report.interface';
 import { TMetricsDetailsRequestParams } from '../../../models/types/metrics/requests/metrics-details-request-params.type';
 import { IMetricsRequestParamsOverview } from '../../../models/types/metrics/requests/metrics-overview-request-params.interface';
 import { TMetricsOverviewReport } from '../../../models/types/metrics/responses/metrics-overview-report.type';
@@ -36,7 +33,7 @@ const ROWS_PER_PAGE = 5;
 const MAX_ROWS_PER_PAGE = 25;
 
 /**
- * Displays an overview of the consumption reports
+ * Displays an overview of the metrics reports.
  */
 function MetricsOverviewPage() {
     const navigate = useNavigate();
@@ -81,11 +78,18 @@ function MetricsOverviewPage() {
         return <div>No Records found</div>;
     }
 
+    /**
+     * Handles the click on a metric, and navigates to the details page.
+     */
     function handleClickMetric(filterQueryParams: TMetricsDetailsRequestParams): void {
         const params = new URLSearchParams(filterQueryParams as Record<string, string>);
         navigate('/metrics/details?' + params.toString());
     }
 
+    /**
+     * Handles the aggregation of the selected reports, and navigates to the details page.
+     * The aggregation is done by the recordingSessionId.
+     */
     function handleAggregation() {
         if (!reportList) return;
         const selectedRows = reportList.filter((row) =>
@@ -105,10 +109,20 @@ function MetricsOverviewPage() {
         navigate('/metrics/details?' + params);
     }
 
+    /**
+     *  Handles the row selection. It sets the selected ids
+     *
+     * @param {GridRowSelectionModel} rowSelectionModel - The row selection model.
+     */
     function handleRowSelection(rowSelectionModel: GridRowSelectionModel) {
         setSelectedIds(rowSelectionModel as string[]);
     }
 
+    /**
+     * Checks if a row is selectable. It is selectable if the selected recording session id is the same as the row's recording session id.
+     *
+     * @param {GridRowParams<TMetricsOverviewReport>} params - The row parameters.
+     */
     function isRowSelectable(params: GridRowParams<TMetricsOverviewReport>): boolean {
         if (selectedIds.length) {
             const selectedRecordingSessionId = reportList?.find(

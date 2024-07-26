@@ -2,6 +2,13 @@ import { EMetricsType } from '../models/enums/metrics/metrics-type.enum';
 import { TMappedQoeMetric, TMappedRepSwitchList } from '../models/types/metrics/qoe-report.type';
 import { IMetricsDetailReport, IQoeMetric } from '../models/types/metrics/responses/metrics-details-report.interface';
 
+/**
+ * Maps the QoE metrics from the report to a format, which is easier to work with.
+ * It finds the QoE metrics in the report and maps them to a more readable format.
+ *
+ * @param {IMetricsDetailReport} report - The report to map the QoE metrics from.
+ * @returns {TMappedQoeMetric} The mapped QoE metrics.
+ */
 export const qoEMetricsFromReport = (report: IMetricsDetailReport): TMappedQoeMetric => {
     const QoeMetric = report?.ReceptionReport?.QoeReport?.QoeMetric;
 
@@ -14,6 +21,9 @@ export const qoEMetricsFromReport = (report: IMetricsDetailReport): TMappedQoeMe
         };
     }
 
+    /**
+     * Finds the metric in the QoE metric list.
+     */
     const findMetricValue = <T extends keyof IQoeMetric>(metricName: T) => {
         return QoeMetric.find((metric) => metric[metricName] !== undefined)?.[metricName];
     };

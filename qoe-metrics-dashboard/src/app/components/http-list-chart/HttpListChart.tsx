@@ -26,6 +26,12 @@ type DataPoint = {
 
 type TypeDataPoint = Record<string, DataPoint[]>;
 
+/**
+ * HttpListChart component displays the http list data of a report. It employs a ScatterChart from recharts.
+ *
+ * @param {Object} props - The properties object.
+ * @param {TMappedHttpList[]} props.httpList - The http list data to be displayed.
+ */
 function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
     const theme = useTheme();
 
@@ -48,6 +54,9 @@ function HttpListChart({ httpList }: { httpList: TMappedHttpList[] }) {
         return acc;
     }, {} as TypeDataPoint);
 
+    /**
+     * Renders the legend of the chart. It allows the user to toggle the visibility of the scatter points.
+     */
     const renderLegend = (props: DefaultLegendContentProps) => {
         const { payload } = props;
 

@@ -13,10 +13,11 @@ interface MetricTypeIconProps {
 }
 
 /**
- * Allows to represent a metric based on its metric type by an icon
+ * MetricTypeIcon component displays the icon of a metric type.
+ * It employs the metricsTypeInformation record to get the icon and the title of the metric type.
  *
- * @param props
- * @constructor
+ * @param {MetricTypeIconProps} props - The properties object.
+ * @param {EMetricsType} props.metricType - The metric type.
  */
 export function MetricTypeIcon(props: MetricTypeIconProps) {
     return (

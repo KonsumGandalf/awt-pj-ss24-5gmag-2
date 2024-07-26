@@ -33,7 +33,7 @@ const ROWS_PER_PAGE = 5;
 const MAX_ROWS_PER_PAGE = 25;
 
 /**
- * Displays an overview of the consumption reports
+ * Displays an overview of the consumption reports.
  */
 function ConsumptionOverviewPage() {
     const navigate = useNavigate();
@@ -76,6 +76,9 @@ function ConsumptionOverviewPage() {
         return <div>No Records found</div>;
     }
 
+    /**
+     * Handles the click on a metric and navigates to the details page.
+     */
     function handleClickMetric(
         consumptionReport: Pick<IConsumptionDetailReport, 'reportingClientId' | 'consumptionReportingUnits'>
     ): void {
@@ -93,17 +96,15 @@ function ConsumptionOverviewPage() {
         navigate('/consumption/details?' + params.toString());
     }
 
-    function consumptionReportingUnitsRenderer(
-        params: GridRenderCellParams,
-        cellName: keyof ConsumptionReportingUnit
-    ) {
+    /**
+     * Renders the consumptionReportingUnits cell. It displays the mediaConsumed or the stability of the consumptionReportingUnits.
+     */
+    function consumptionReportingUnitsRenderer(params: GridRenderCellParams, cellName: keyof ConsumptionReportingUnit) {
         const consumptionReports = params.value as ConsumptionReportingUnit[];
         return (
-            <div className='consumptionUnit'>
+            <div className="consumptionUnit">
                 {consumptionReports.map((metricType: ConsumptionReportingUnit, index: number) => (
-                        <p className="unitCell">
-                            {`${metricType[cellName]}`}
-                        </p>
+                    <p className="unitCell">{`${metricType[cellName]}`}</p>
                 ))}
             </div>
         );
@@ -118,9 +119,7 @@ function ConsumptionOverviewPage() {
             headerName: 'Media Consumed',
             cellClassName: 'consumptionUnit',
             renderCell: (params: GridRenderCellParams) => {
-                return (
-                        <>{consumptionReportingUnitsRenderer(params, 'mediaConsumed')}</>
-                );
+                return <>{consumptionReportingUnitsRenderer(params, 'mediaConsumed')}</>;
             },
             sortable: false,
         },
@@ -135,10 +134,11 @@ function ConsumptionOverviewPage() {
                     toolbar: {
                         printOptions: { disableToolbarButton: true },
                         csvOptions: { disableToolbarButton: true },
-                    }}}
+                    },
+                }}
                 initialState={{
                     pagination: {
-                        paginationModel: { pageSize: 10 }
+                        paginationModel: { pageSize: 10 },
                     },
                     sorting: {
                         sortModel: [{ field: 'reportingClientId', sort: ESortingOrder.ASC }],
@@ -190,7 +190,7 @@ function ConsumptionOverviewPage() {
                         <FooterButton>
                             <ReloadButton action={onReload} topic={ESseTopic.CONSUMPTION} />
                         </FooterButton>
-                    )
+                    ),
                 }}
                 getRowHeight={() => 'auto'}
             />
