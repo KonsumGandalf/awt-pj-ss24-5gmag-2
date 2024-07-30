@@ -9,9 +9,13 @@ Authors:
 - Jonas Heisterberg <heisterberg@campus.tu-berlin.de>
 - Cedric Lenßen <c.lenssen@campus.tu-berlin.de>
 
+# Installation
+
+Run `npm install` to install all dependencies.
+
 ## Start the application
 
-Run `npx nx serve qoe-metrics-dashboard` to start the development server. Happy coding!
+Run `npm start` to start the development server.
 
 ## Build for production
 

@@ -1,7 +1,8 @@
-var express = require('express');
-const Utils = require('../../utils/Utils');
+const express = require('express');
+const Utils = require('../../utils/utils');
 const ReportsService = require('../../services/reports.service');
-var router = express.Router();
+
+const router = express.Router();
 
 const reportsService = new ReportsService();
 
@@ -9,9 +10,9 @@ const reportsService = new ReportsService();
  * This endpoint returns an overview of all the metrics for the given provisionSessionIds
  */
 router.get('/', async (req, res) => {
-    let provisionSessionIds = req.query.provisionSessionIds;
+    let { provisionSessionIds } = req.query;
     if (!provisionSessionIds) {
-        return res.status(400).send('provisionSessionId is required');
+        return res.status(400).send('provisionSessionIds is required');
     }
 
     provisionSessionIds = Utils.regexRangeToArray(provisionSessionIds);

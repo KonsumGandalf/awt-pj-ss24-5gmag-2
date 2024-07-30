@@ -5,9 +5,16 @@ const { chain, isEmpty } = require('lodash');
 const { BehaviorSubject } = require('rxjs');
 const { faker } = require('@faker-js/faker');
 
-
+/**
+ * Utils are used to provide utility functions for the application.
+ */
 class Utils {
-    static fileWritten$ = new BehaviorSubject({ });
+    /**
+     * A BehaviorSubject that notifies subscribers when a file has been written.
+     *
+     * @type {BehaviorSubject<unknown>}
+     */
+    static fileWritten$ = new BehaviorSubject({});
 
     static async writeToDisk(filepath, content, topic) {
         return new Promise((resolve, reject) => {
@@ -34,11 +41,11 @@ class Utils {
         try {
             const filePaths = await Utils.getDirectoriesRecursive(directoryPathRoot, fileMatchRegex);
             return chain(filePaths)
-                .map(path => {
+                .map((path) => {
                     const fileContent = fs.readFileSync(path, 'utf-8');
-                    return fileContent ? fileContent : null;
+                    return fileContent || null;
                 })
-                .filter(content => !isEmpty(content))
+                .filter((content) => !isEmpty(content))
                 .value();
         } catch (error) {
             console.error(`Error reading files from ${directoryPathRoot}: ${error.message}`);
@@ -54,17 +61,20 @@ class Utils {
      */
     static async getDirectoriesRecursive(path, fileMatchRegex) {
         return new Promise((resolve, reject) => {
-            dir.readFiles(path, {
-                    match: fileMatchRegex
+            dir.readFiles(
+                path,
+                {
+                    match: fileMatchRegex,
                 },
-                function (err, content, next) {
+                (err, content, next) => {
                     if (err) return reject(err);
                     next();
                 },
-                function (err, files) {
+                (err, files) => {
                     if (err) return reject(err);
                     resolve(files);
-                });
+                }
+            );
         });
     }
 
@@ -73,29 +83,35 @@ class Utils {
      * @param rangeString
      * @returns {*|*[]}
      */
-    static regexRangeToArray(rangeString)  {
-            const match = rangeString.match(/(\d+)-(\d+)/);
-            if (!match) return [];
+    static regexRangeToArray(rangeString) {
+        const match = rangeString.match(/(\d+)-(\d+)/);
+        if (!match) return [];
 
-            const start = parseInt(match[1], 10);
-            const end = parseInt(match[2], 10);
+        const start = parseInt(match[1], 10);
+        const end = parseInt(match[2], 10);
 
-            const result = [];
-            for (let i = start; i <= end; i++) {
-                result.push(i.toString());
-            }
-            return result;
-
+        const result = [];
+        for (let i = start; i <= end; i++) {
+            result.push(i.toString());
+        }
+        return result;
     }
 
-
+    /**
+     * Triggers an interval with a random delay between minDelay and maxDelay.
+     *
+     * @param topic
+     * @param content
+     * @param minDelay
+     * @param maxDelay
+     */
     static triggerIrregularInterval(topic, content, minDelay, maxDelay) {
         const delay = faker.number.int({ min: minDelay, max: maxDelay });
         setTimeout(() => {
             this.fileWritten$.next({ topic, content });
             this.triggerIrregularInterval(topic, content, minDelay, maxDelay);
         }, delay);
-    };
+    }
 }
 
 module.exports = Utils;

@@ -1,5 +1,6 @@
 const express = require('express');
-const Utils = require('../../utils/Utils');
+const Utils = require('../../utils/utils');
+
 const router = express.Router();
 
 /**
@@ -16,18 +17,18 @@ router.get('/reload', (req, res) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Content-Encoding': 'none'
+        Connection: 'keep-alive',
+        'Content-Encoding': 'none',
     });
 
     const subscription = Utils.fileWritten$.subscribe({
-        next: async ({ content, topic}) => {
+        next: async ({ content, topic }) => {
             res.write(`event: ${topic}\ndata: A new file has been written\n\n`);
         },
         error: (err) => {
             console.error(err);
             res.status(500).send(err.message);
-        }
+        },
     });
 
     req.on('close', () => {

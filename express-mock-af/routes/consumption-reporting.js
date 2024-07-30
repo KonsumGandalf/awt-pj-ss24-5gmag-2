@@ -1,21 +1,26 @@
-var express = require('express');
-var router = express.Router();
-var Utils = require('../utils/Utils.js')
+const express = require('express');
+const Utils = require('../utils/utils.js');
 
-router.post('/:provisioningSessionId', function(req, res, next) {
-  try {
-    //console.log(`ConsumptionReporting: `, req.body)
-    const payload = req.body
-    const path = `public/reports/${req.params.provisioningSessionId}/consumption_reports/${payload.reportingClientId}_${new Date().toISOString()}.json`
+const router = express.Router();
 
-    Utils.writeToDisk(path, JSON.stringify(payload), 'consumption')
-    res.send(204);
-  }
-  catch(e) {
-    console.error(e)
-  }
+router.post('/:provisioningSessionId?', (req, res, next) => {
+    if (!req.params.provisioningSessionId) {
+        return res.status(400).send('provisioningSessionId is required');
+    }
+    if (!req.body.reportingClientId) {
+        return res.status(400).send('reportingClientId in body is required');
+    }
 
+    try {
+        const payload = req.body;
+        const path = `public/reports/${req.params.provisioningSessionId}/consumption_reports/${payload.reportingClientId}_${new Date().toISOString()}.json`;
+
+        Utils.writeToDisk(path, JSON.stringify(payload), 'consumption');
+        res.sendStatus(204);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
 });
-
 
 module.exports = router;
