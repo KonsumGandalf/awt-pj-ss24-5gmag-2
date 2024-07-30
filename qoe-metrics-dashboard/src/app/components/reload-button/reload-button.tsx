@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { ReplayTwoTone } from '@mui/icons-material';
-import { Button, ButtonProps, Tooltip } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { EnvContext } from '../../env.context';

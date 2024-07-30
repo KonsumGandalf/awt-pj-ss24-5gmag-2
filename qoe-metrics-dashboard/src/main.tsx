@@ -1,10 +1,10 @@
-import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import { ThemeProvider } from '@mui/material';
 
 import App from './app/app';
+import ConsumptionDetailPage from './app/pages/consumption/detail/consumptionDetailPage';
 import ConsumptionOverviewPage from './app/pages/consumption/overview/ConsumptionOverviewPage';
 import MetricsDetailPage from './app/pages/metrics/detail/MetricsDetailPage';
 import MetricsOverviewPage from './app/pages/metrics/overview/MetricsOverviewPage';
@@ -14,7 +14,6 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import ConsumptionDetailPage from './app/pages/consumption/detail/consumptionDetailPage';
 
 const router = createBrowserRouter([
     {

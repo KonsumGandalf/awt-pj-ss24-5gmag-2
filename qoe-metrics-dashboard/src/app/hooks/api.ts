@@ -59,7 +59,7 @@ export const useSseReloadList = (backendUrl: string, topic: string) => {
         };
 
         sse.onerror = function (e) {
-            if (this.readyState == EventSource.CONNECTING) {
+            if (this.readyState === EventSource.CONNECTING) {
                 console.log(`Reconnecting (readyState=${this.readyState})...`);
             } else {
                 console.log('Error has occurred: ', e);
