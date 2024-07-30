@@ -23,7 +23,6 @@ export const useAxiosGet = <T>({ url, params, rerender }: { url: string; params:
                 params: memoizedParams,
             })
                 .then((res) => {
-                    console.log('Response', res.data);
                     setResponse(res.data);
                 })
                 .catch((err) => {
