@@ -50,4 +50,27 @@ describe('useAxiosGet', () => {
         expect(screen.getByTestId('error').textContent).toBe('null');
         expect(screen.getByTestId('response').textContent).toBe(JSON.stringify(mockData));
     });
+    it('should return an error on failed fetch', async () => {
+        const url = '/api/test';
+        const params = { param1: 'value1' };
+
+        mockAxios.onGet(url, { params }).reply(500);
+
+        // Intercept console.error to prevent error from being printed
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+            // Do nothing
+        });
+
+        render(<TestComponent url={url} params={params} />);
+
+        expect(screen.getByTestId('loading').textContent).toBe('true');
+        expect(screen.getByTestId('error').textContent).toBe('null');
+
+        await waitFor(() => expect(screen.getByTestId('loading').textContent).toBe('false'));
+        expect(screen.getByTestId('error').textContent).not.toBe('null');
+        expect(screen.getByTestId('response').textContent).toBe('null');
+
+        // Restore console.error after test
+        consoleErrorSpy.mockRestore();
+    });
 });
