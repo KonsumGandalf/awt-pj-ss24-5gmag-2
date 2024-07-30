@@ -1,9 +1,9 @@
 import { useCallback, useContext, useState } from 'react';
 import { isAxiosError } from 'axios';
-import { defaults, isNil, omitBy, pick, range } from 'lodash';
+import { isNil, omitBy, pick, range } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 
-import { Alert, Button, CircularProgress, TableCell, TableRow } from '@mui/material';
+import { Alert, CircularProgress } from '@mui/material';
 import {
     DataGrid,
     DEFAULT_GRID_AUTOSIZE_OPTIONS,
