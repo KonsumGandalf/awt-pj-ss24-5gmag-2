@@ -26,11 +26,9 @@ export const useAxiosGet = <T>({ url, params, rerender }: { url: string; params:
                     setResponse(res.data);
                 })
                 .catch((err) => {
-                    console.error('Error fetching data', err);
                     setError(err);
                 })
                 .finally(() => {
-                    console.log('Finished fetching data');
                     setLoading(false);
                 });
         };
