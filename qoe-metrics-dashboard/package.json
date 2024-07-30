@@ -7,7 +7,7 @@
         "build": "nx build",
         "test": "nx test",
         "lint": "nx lint",
-        "coverage": "nx run-many --target=coverage --all"
+        "coverage": "nx run-many --target=test --all --coverage"
     },
     "private": true,
     "dependencies": {
