@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "7ae2ff39-f4d7-440d-b303-a8423ac1d237",
+		"name": "MockServer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20364286",
+		"_collection_link": "https://www.postman.com/planetary-meteor-808735/workspace/awt-5g-mag/collection/20364286-7ae2ff39-f4d7-440d-b303-a8423ac1d237?action=share&source=collection_link&creator=20364286"
+	},
+	"item": [
+		{
+			"name": "ui",
+			"item": [
+				{
+					"name": "metrics",
+					"item": [
+						{
+							"name": "overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const response = pm.response.json();",
+											"",
+											"if(!response){",
+											"    return;",
+											"}",
+											"",
+											"const exampleResult = response[17];",
+											"if (!exampleResult) {",
+											"    return;",
+											"}",
+											"",
+											"pm.environment.set(\"reportTime\", exampleResult.reportTime);",
+											"pm.environment.set(\"recordingSessionId\", exampleResult.recordingSessionId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3003/reporting-ui/metrics?provisionSessionIds=/1-6/",
+									"host": [
+										"localhost"
+									],
+									"port": "3003",
+									"path": [
+										"reporting-ui",
+										"metrics"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "reportType",
+											"value": "metrics",
+											"disabled": true
+										},
+										{
+											"key": "provisionSessionIds",
+											"value": "/1-6/"
+										},
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "detail",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{frontend-url}}/metrics/details?reportTime=2024-05-15T17:51:21.730Z&recordingSessionId=ed2b9dbc7b6440ad9cd1bf78302d93ea",
+									"host": [
+										"{{frontend-url}}"
+									],
+									"path": [
+										"metrics",
+										"details"
+									],
+									"query": [
+										{
+											"key": "reportTime",
+											"value": "2024-05-15T17:51:21.730Z"
+										},
+										{
+											"key": "recordingSessionId",
+											"value": "ed2b9dbc7b6440ad9cd1bf78302d93ea"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "consumption",
+					"item": [
+						{
+							"name": "overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const response = pm.response.json();",
+											"",
+											"if(!response){",
+											"    return;",
+											"}",
+											"",
+											"const exampleResult = response[0];",
+											"if (!exampleResult) {",
+											"    return;",
+											"}",
+											"",
+											"pm.globals.set(\"reportingClientId\", exampleResult.reportingClientId);",
+											"",
+											"const exampleReportingUnit = exampleResult.consumptionReportingUnits[0];",
+											"if (!exampleResult) {",
+											"    return;",
+											"}",
+											"",
+											"pm.globals.set(\"duration\", exampleReportingUnit.duration);",
+											"pm.globals.set(\"startTime\", exampleReportingUnit.startTime);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3003/reporting-ui/consumption?provisionSessionIds=/1-6/",
+									"host": [
+										"localhost"
+									],
+									"port": "3003",
+									"path": [
+										"reporting-ui",
+										"consumption"
+									],
+									"query": [
+										{
+											"key": "provisionSessionIds",
+											"value": "/1-6/"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "detail",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{frontend-url}}/consumption/details?duration={{duration}}&reportingClientId={{reportingClientId}}&startTime={{startTime}}",
+									"host": [
+										"{{frontend-url}}"
+									],
+									"path": [
+										"consumption",
+										"details"
+									],
+									"query": [
+										{
+											"key": "duration",
+											"value": "{{duration}}"
+										},
+										{
+											"key": "reportingClientId",
+											"value": "{{reportingClientId}}"
+										},
+										{
+											"key": "startTime",
+											"value": "{{startTime}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "M8 information",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://virenschleuder-pc:3003/m8/m8.json",
+					"protocol": "http",
+					"host": [
+						"virenschleuder-pc"
+					],
+					"port": "3003",
+					"path": [
+						"m8",
+						"m8.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Service Access Information",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "frontend-url",
+			"value": "http://localhost:3003"
+		}
+	]
+}
