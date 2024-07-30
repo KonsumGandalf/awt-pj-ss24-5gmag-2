@@ -70,7 +70,6 @@ describe('useAxiosGet', () => {
         expect(screen.getByTestId('error').textContent).not.toBe('null');
         expect(screen.getByTestId('response').textContent).toBe('null');
 
-        // Restore console.error after test
         consoleErrorSpy.mockRestore();
     });
 });
