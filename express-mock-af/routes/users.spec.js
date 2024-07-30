@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(router);
 
 describe('/users', () => {
-    it('should return the m8 object', async () => {
+    it('should return a 200 status code', async () => {
         const response = await request(app).get('/users');
 
         expect(response.status).toBe(200);
