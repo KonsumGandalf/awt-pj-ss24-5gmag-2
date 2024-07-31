@@ -1,15 +1,8 @@
 # QoeMetricsDashboard
 
-This is the repository for Group 2 of the 5G-MAG - A user interface for metrics and consumption reports project of the
-module Advanced Web Technologies at TU Berlin
+This project provides the Client-side React Application for the project "5G-MAG - A user interface for metrics and consumption reports".
 
-Authors:
-
-- David Schmidt <d.schmidt@campus.tu-berlin.de>
-- Jonas Heisterberg <heisterberg@campus.tu-berlin.de>
-- Cedric Lenßen <c.lenssen@campus.tu-berlin.de>
-
-# Installation
+## Installation
 
 Run `npm install` to install all dependencies.
 
@@ -21,3 +14,11 @@ Run `npm start` to start the development server.
 
 Run `npx nx build qoe-metrics-dashboard` to build the application. The build artifacts are stored in the output
 directory (e.g. `dist/` or `build/`), ready to be deployed.
+
+## Test the application
+
+Run `npm run test` to run the test suite.
+
+## Lint the application
+
+Run `npm run lint` to test for code quality and consistency using ESLint.
